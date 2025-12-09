@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Clear, practical legal advice | Barrister{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="home-hero py-6">
+  <div class="container-xl">
+    <div class="row align-items-center gx-5 gy-4">
+      <div class="col-lg-7">
+        <h1 class="display-5 fw-semibold home-hero-title mb-3">{{ homepage.hero_heading|default:"Clear, practical legal advice" }}</h1>
+        <p class="lead mb-3 text-light-50">{{ homepage.hero_subheading|default:"Focused expertise in commercial, criminal, general practice, and personal injury matters. Direct professional access provided."|safe }}</p>
+        <p class="small text-light-50 mb-4">
+          <i class="bi bi-shield-check me-1"></i> Called to the Bar: 2021
+          <span class="mx-2">·</span>
+          <i class="bi bi-briefcase me-1"></i> Commercial, Criminal & General Practice
+        </p>
+        <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+          <a href="/book/" class="btn btn-primary btn-lg home-hero-cta-primary">
+            <i class="bi bi-calendar-check me-2"></i>Book a consultation
+          </a>
+          <a href="/practice-areas/" class="btn btn-outline-light btn-lg home-hero-cta-secondary">
+            View practice areas
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="card shadow-sm border-0 home-hero-card">
+          <div class="ratio ratio-3x4 home-hero-photo-frame">
+            <img src="{% static 'img/headshot.jpg' %}"
+                 alt="Portrait of barrister David Nugent"
+                 class="w-100 h-100 object-fit-cover">
+          </div>
+          <div class="card-body">
+            <h2 class="h5 mb-1">David&nbsp;Nugent&nbsp;BL</h2>
+            <p class="small text-muted mb-2">Barrister-at-Law – Commercial & Employment</p>
+            <p class="small text-muted mb-0">
+              Providing focused advice and advocacy in commercial, employment and regulatory disputes.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Practice areas preview -->
+<section class="py-5 bg-body">
+  <div class="container-xl">
+    <div class="row justify-content-between align-items-end mb-4">
+      <div class="col-md-8">
+        <h2 class="h3 fw-semibold mb-2">Practice areas</h2>
+        <p class="text-muted mb-0">
+          A focused practice across the Dublin, Eastern and Midland Circuits.
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="/practice-areas/" class="small fw-semibold text-decoration-none">
+          View all practice areas <i class="bi bi-arrow-right-short"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {% if practice_areas %}
+        {% for area in practice_areas %}
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="card practice-card h-100 border-0 shadow-sm">
+            <div class="card-body d-flex flex-column">
+              <span class="badge practice-badge small text-uppercase mb-2">Practice area</span>
+              <h3 class="h5 mb-2">
+                <a href="{% url 'practice_area_detail' area.slug %}" class="stretched-link text-decoration-none text-dark">
+                  {{ area.name }}
+                </a>
+              </h3>
+              <p class="small text-muted mb-0">
+                {% if area.short_summary %}
+                  {{ area.short_summary }}
+                {% else %}
+                  {{ area.body|striptags|truncatewords:20 }}
+                {% endif %}
+              </p>
+            </div>
+          </article>
+        </div>
+        {% endfor %}
+      {% else %}
+        <!-- Fallback hardcoded cards if no practice areas in DB -->
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="card practice-card h-100 border-0 shadow-sm">
+            <div class="card-body d-flex flex-column">
+              <span class="badge practice-badge small text-uppercase mb-2">Practice area</span>
+              <h3 class="h5 mb-2">
+                <a href="/practice-areas/#employment" class="stretched-link text-decoration-none text-dark">Employment</a>
+              </h3>
+              <p class="small text-muted mb-0">Unfair dismissal, redundancy, discrimination, contracts, and workplace investigations.</p>
+            </div>
+          </article>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="card practice-card h-100 border-0 shadow-sm">
+            <div class="card-body d-flex flex-column">
+              <span class="badge practice-badge small text-uppercase mb-2">Practice area</span>
+              <h3 class="h5 mb-2">
+                <a href="/practice-areas/#commercial" class="stretched-link text-decoration-none text-dark">Commercial</a>
+              </h3>
+              <p class="small text-muted mb-0">Contract disputes, shareholder matters, injunctions, and debt recovery.</p>
+            </div>
+          </article>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="card practice-card h-100 border-0 shadow-sm">
+            <div class="card-body d-flex flex-column">
+              <span class="badge practice-badge small text-uppercase mb-2">Practice area</span>
+              <h3 class="h5 mb-2">
+                <a href="/practice-areas/#regulatory" class="stretched-link text-decoration-none text-dark">Regulatory</a>
+              </h3>
+              <p class="small text-muted mb-0">Professional discipline, compliance opinions, and statutory appeals.</p>
+            </div>
+          </article>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Case studies teaser -->
+{% if featured_cases %}
+<section class="py-5 bg-light">
+  <div class="container-xl">
+    <div class="row justify-content-between align-items-end mb-4">
+      <div class="col-md-8">
+        <h2 class="h3 fw-semibold mb-2">Illustrative case studies</h2>
+        <p class="text-muted mb-0">
+          Anonymised examples of recent instructions and outcomes.
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="/cases/" class="small fw-semibold text-decoration-none">
+          View all case studies <i class="bi bi-arrow-right-short"></i>
+        </a>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for case in featured_cases %}
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="card case-card h-100 border-0 shadow-sm">
+            <div class="card-body d-flex flex-column">
+              {% if case.practice_areas.first %}
+                <span class="case-badge small text-uppercase mb-2">
+                  {{ case.practice_areas.first.name }}
+                </span>
+              {% endif %}
+              <h3 class="h5 mb-1">
+                <a href="{% url 'case_detail' case.slug %}" class="stretched-link text-decoration-none text-dark">
+                  {{ case.title }}
+                </a>
+              </h3>
+              <p class="small text-muted mb-2">
+                {% if case.date_of_case %}{{ case.date_of_case|date:"Y" }}{% elif case.published_at %}{{ case.published_at|date:"Y" }}{% endif %}
+                {% if case.outcome %} · {{ case.outcome|truncatewords:6 }}{% endif %}
+              </p>
+              {% if case.summary %}
+                <p class="small text-muted mb-0 mt-1">{{ case.summary|truncatewords:18 }}</p>
+              {% endif %}
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Blog/Insights teaser -->
+{% if latest_posts %}
+<section class="py-5 bg-body">
+  <div class="container-xl">
+    <div class="row justify-content-between align-items-end mb-4">
+      <div class="col-md-8">
+        <h2 class="h3 fw-semibold mb-2">Recent insights</h2>
+        <p class="text-muted mb-0">
+          Short updates and commentary on commercial, criminal and regulatory issues.
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="/blog/" class="small fw-semibold text-decoration-none">
+          View all insights <i class="bi bi-arrow-right-short"></i>
+        </a>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for post in latest_posts %}
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="card blog-card h-100 border-0 shadow-sm">
+            {% if post.hero_image %}
+              <div class="ratio ratio-16x9 blog-card-img-wrapper">
+                <img src="{{ post.hero_image.url }}" alt="{{ post.title }}" class="w-100 h-100 object-fit-cover">
+              </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+              {% if post.published_at %}
+              <p class="small text-muted mb-1">
+                {{ post.published_at|date:"j F Y" }}
+              </p>
+              {% endif %}
+              <h3 class="h5 mb-2">
+                <a href="{% url 'blog_detail' post.slug %}" class="stretched-link text-decoration-none text-dark blog-card-title">
+                  {{ post.title }}
+                </a>
+              </h3>
+              {% if post.summary %}
+              <p class="small text-muted mb-0 mt-1">{{ post.summary|truncatewords:16 }}</p>
+              {% endif %}
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Final CTA strip -->
+<section class="py-5 home-cta-strip">
+  <div class="container-xl">
+    <div class="row align-items-center gy-3">
+      <div class="col-lg-8">
+        <h2 class="h4 fw-semibold mb-1">Need advice on a specific matter?</h2>
+        <p class="text-muted mb-0">
+          This site provides general information only. For tailored advice, you can contact chambers or book a consultation.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <div class="d-flex flex-column flex-sm-row justify-content-lg-end gap-2">
+          <a href="/book/" class="btn btn-primary">
+            Book consultation
+          </a>
+          <a href="/contact/" class="btn btn-outline-secondary">
+            Contact chambers
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Book a Consultation | David Nugent BL{% endblock %}
+{% block content %}
+
+<!-- Book consultation page -->
+<main class="py-5 bg-body">
+  <section class="py-4">
+    <div class="container-lg">
+      <!-- Page header -->
+      <header class="mb-5">
+        <h1 class="h3 fw-semibold mb-2">Book a consultation</h1>
+        <p class="text-muted mb-0">
+          You can use this page to request an initial consultation regarding your legal matter.
+        </p>
+      </header>
+
+      <div class="row g-5">
+        <!-- Booking widget column -->
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-sm booking-card">
+            <div class="card-body p-4">
+              <h2 class="h5 fw-semibold mb-3">Select a time</h2>
+
+              <!-- Calendly widget container -->
+              <div class="booking-widget" id="booking-widget">
+                <div class="calendly-inline-widget"
+                     data-url="https://calendly.com/YOUR_USERNAME/consultation"
+                     style="min-width:320px;height:620px;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer with fallback -->
+            <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+              <p class="small text-muted mb-0" style="line-height: 1.5;">
+                If the booking calendar does not load, you can <a href="/contact/" class="text-decoration-none">contact chambers</a> by email or telephone to arrange a suitable time.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Information column -->
+        <div class="col-lg-4">
+          <aside class="booking-aside">
+            <!-- Before you book -->
+            <div class="mb-4 pb-4 border-bottom">
+              <h2 class="h6 fw-semibold mb-3 booking-aside-heading">Before you book</h2>
+              <p class="small text-muted mb-2" style="line-height: 1.6;">
+                Consultations are typically arranged for a fixed period and may be held remotely or in person, depending on the circumstances.
+              </p>
+              <p class="small text-muted mb-0" style="line-height: 1.6;">
+                If your matter is particularly urgent or complex, you may prefer to email chambers with a short outline first.
+              </p>
+            </div>
+
+            <!-- What to prepare -->
+            <div class="mb-4 pb-4 border-bottom">
+              <h2 class="h6 fw-semibold mb-3 booking-aside-heading">What to prepare</h2>
+              <ul class="small text-muted mb-0 ps-3" style="line-height: 1.6;">
+                <li class="mb-2">A brief summary of your matter</li>
+                <li class="mb-2">Any relevant dates or deadlines</li>
+                <li class="mb-2">Key documents (if applicable)</li>
+                <li>Questions you'd like to address</li>
+              </ul>
+            </div>
+
+            <!-- Contact alternatives -->
+            <div class="mb-4 pb-4 border-bottom">
+              <h2 class="h6 fw-semibold mb-3 booking-aside-heading">Contact alternatives</h2>
+              <p class="small text-muted mb-2">
+                <i class="bi bi-envelope me-2 text-primary"></i>
+                <a href="mailto:david.nugent@lawlibrary.ie" class="text-decoration-none">david.nugent@lawlibrary.ie</a>
+              </p>
+              <p class="small text-muted mb-0">
+                <i class="bi bi-telephone me-2 text-primary"></i>
+                <a href="tel:012916043" class="text-decoration-none">01 291 6043</a>
+              </p>
+            </div>
+
+            <!-- Important disclaimer -->
+            <div>
+              <h2 class="h6 fw-semibold mb-3 booking-aside-heading">Important</h2>
+              <p class="small text-muted mb-0" style="line-height: 1.6;">
+                Booking a consultation does not in itself create a solicitor–client relationship. Any engagement depends on the scope of instructions agreed.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Calendly widget script -->
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+{% endblock %}

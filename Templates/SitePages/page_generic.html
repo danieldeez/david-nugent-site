@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block content %}
+<section class="section-pad">
+  <div class="container">
+    <h1 class="h2 mb-3">{{ page.title }}</h1>
+    {% if page.hero_image %}
+      <img src="{{ page.hero_image.url }}" class="img-fluid rounded shadow-sm mb-4" alt="">
+    {% endif %}
+    <div class="content ck-content">
+      {{ page.body|safe }}
+    </div>
+  </div>
+</section>
+{% endblock %}

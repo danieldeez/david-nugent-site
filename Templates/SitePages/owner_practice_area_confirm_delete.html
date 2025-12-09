@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Delete {{ area.name }} | Owner{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container" style="max-width: 700px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-1">Delete Practice Area</h1>
+        <p class="text-ink-600 mb-0">This action cannot be undone</p>
+      </div>
+      <a href="{% url 'owner_practice_area_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+    </div>
+
+    <div class="card border-danger shadow-sm">
+      <div class="card-header bg-danger bg-opacity-10 border-danger">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-exclamation-triangle text-danger me-2" style="font-size: 1.5rem;"></i>
+          <h5 class="mb-0 text-danger">Confirm Deletion</h5>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <p class="mb-3">
+          Are you sure you want to delete the practice area:
+        </p>
+        <div class="alert alert-light border mb-4">
+          <h5 class="mb-2">{{ area.name }}</h5>
+          <p class="mb-1 text-muted"><strong>Slug:</strong> <code>{{ area.slug }}</code></p>
+          <p class="mb-0 text-muted small">{{ area.description|truncatewords:30 }}</p>
+        </div>
+
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-circle"></i>
+          <strong>Warning:</strong> This will permanently delete the practice area and remove it from your public website. Any links to <code>/practice-areas/{{ area.slug }}/</code> will break.
+        </div>
+
+        <form method="post" class="d-flex gap-2 pt-3">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Yes, Delete Practice Area
+          </button>
+          <a href="{% url 'owner_practice_area_list' %}" class="btn btn-secondary">
+            <i class="bi bi-x-lg"></i> Cancel
+          </a>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mt-4 border-info">
+      <div class="card-body">
+        <h6 class="card-title">
+          <i class="bi bi-lightbulb text-info"></i> Alternative Option
+        </h6>
+        <p class="mb-0 text-ink-600 small">
+          Instead of deleting, you might want to keep the practice area but remove it from public view by editing it in the Django admin and marking it as inactive (if such a field exists).
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

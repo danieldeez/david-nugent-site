@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}Create Case Study{% else %}Edit {{ case.title }}{% endif %} | Owner{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container" style="max-width: 900px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-1">
+          {% if is_create %}
+            Create Case Study
+          {% else %}
+            Edit: {{ case.title }}
+          {% endif %}
+        </h1>
+        <p class="text-ink-600 mb-0">
+          {% if is_create %}
+            Add a new case study
+          {% else %}
+            <span class="badge bg-secondary">{{ case.slug }}</span>
+            {% if case.published %}
+              <span class="badge bg-success">Published</span>
+            {% else %}
+              <span class="badge bg-secondary">Draft</span>
+            {% endif %}
+          {% endif %}
+        </p>
+      </div>
+      <a href="{% url 'owner_case_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white border-bottom">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-folder text-warning me-2" style="font-size: 1.25rem;"></i>
+          <h5 class="mb-0">Case Study Details</h5>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          <!-- Basic Details Section -->
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">
+              <i class="bi bi-file-text"></i> Basic Details
+            </h6>
+
+            <div class="mb-3">
+              <label for="{{ form.title.id_for_label }}" class="form-label fw-semibold">
+                {{ form.title.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.title }}
+              {% if form.title.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.title.errors }}
+                </div>
+              {% endif %}
+              <small class="text-muted d-block mt-1">
+                The case title or name.
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.slug.id_for_label }}" class="form-label fw-semibold">
+                {{ form.slug.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.slug }}
+              {% if form.slug.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.slug.errors }}
+                </div>
+              {% endif %}
+              {% if form.slug.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.slug.help_text }}
+                </small>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.summary.id_for_label }}" class="form-label fw-semibold">
+                {{ form.summary.label }}
+              </label>
+              {{ form.summary }}
+              {% if form.summary.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.summary.errors }}
+                </div>
+              {% endif %}
+              {% if form.summary.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.summary.help_text }}
+                </small>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.body.id_for_label }}" class="form-label fw-semibold">
+                {{ form.body.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.body }}
+              {% if form.body.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.body.errors }}
+                </div>
+              {% endif %}
+              <small class="text-muted d-block mt-1">
+                Full case study content with details and analysis.
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.hero_image.id_for_label }}" class="form-label fw-semibold">
+                {{ form.hero_image.label }}
+              </label>
+              {{ form.hero_image }}
+              {% if form.hero_image.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.hero_image.errors }}
+                </div>
+              {% endif %}
+              {% if form.hero_image.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.hero_image.help_text }}
+                </small>
+              {% endif %}
+              {% if case.hero_image and not is_create %}
+                <div class="mt-2">
+                  <small class="text-muted">Current image:</small><br>
+                  <img src="{{ case.hero_image.url }}" alt="Hero image" class="img-thumbnail" style="max-width: 300px; max-height: 200px;">
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Case Information Section -->
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">
+              <i class="bi bi-briefcase"></i> Case Information
+            </h6>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="{{ form.date_of_case.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.date_of_case.label }}
+                </label>
+                {{ form.date_of_case }}
+                {% if form.date_of_case.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.date_of_case.errors }}
+                  </div>
+                {% endif %}
+                {% if form.date_of_case.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.date_of_case.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label for="{{ form.outcome.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.outcome.label }}
+                </label>
+                {{ form.outcome }}
+                {% if form.outcome.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.outcome.errors }}
+                  </div>
+                {% endif %}
+                {% if form.outcome.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.outcome.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.citation_ref.id_for_label }}" class="form-label fw-semibold">
+                {{ form.citation_ref.label }}
+              </label>
+              {{ form.citation_ref }}
+              {% if form.citation_ref.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.citation_ref.errors }}
+                </div>
+              {% endif %}
+              {% if form.citation_ref.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.citation_ref.help_text }}
+                </small>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                {{ form.practice_areas.label }}
+              </label>
+              <div class="border rounded p-3" style="background: #f8f9fa;">
+                {{ form.practice_areas }}
+                {% if form.practice_areas.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.practice_areas.errors }}
+                  </div>
+                {% endif %}
+                {% if form.practice_areas.help_text %}
+                  <small class="text-muted d-block mt-2">
+                    {{ form.practice_areas.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Reference Section -->
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">
+              <i class="bi bi-link-45deg"></i> Reference (optional)
+            </h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="{{ form.citation_name.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.citation_name.label }}
+                </label>
+                {{ form.citation_name }}
+                {% if form.citation_name.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.citation_name.errors }}
+                  </div>
+                {% endif %}
+                {% if form.citation_name.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.citation_name.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label for="{{ form.citation_url.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.citation_url.label }}
+                </label>
+                {{ form.citation_url }}
+                {% if form.citation_url.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.citation_url.errors }}
+                  </div>
+                {% endif %}
+                {% if form.citation_url.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.citation_url.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Publication Settings Section -->
+          <div class="card mb-4 bg-light border-0">
+            <div class="card-body">
+              <h6 class="card-title">
+                <i class="bi bi-calendar-check text-warning"></i> Publication Settings
+              </h6>
+
+              <div class="form-check mb-3">
+                {{ form.published }}
+                <label class="form-check-label" for="{{ form.published.id_for_label }}">
+                  {{ form.published.label }}
+                </label>
+                {% if form.published.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.published.errors }}
+                  </div>
+                {% endif %}
+                {% if form.published.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.published.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+
+              <div>
+                <label for="{{ form.published_at.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.published_at.label }}
+                </label>
+                {{ form.published_at }}
+                {% if form.published_at.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.published_at.errors }}
+                  </div>
+                {% endif %}
+                {% if form.published_at.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.published_at.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 pt-3 border-top">
+            <button type="submit" class="btn btn-warning">
+              <i class="bi bi-check-lg"></i> {% if is_create %}Create Case Study{% else %}Save Changes{% endif %}
+            </button>
+            <a href="{% url 'owner_case_list' %}" class="btn btn-outline-secondary">
+              Cancel
+            </a>
+            {% if not is_create and case.published %}
+              <a href="{{ case.get_absolute_url }}" class="btn btn-outline-secondary ms-auto" target="_blank">
+                <i class="bi bi-eye"></i> View Public Case
+              </a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mt-4 border-info">
+      <div class="card-body">
+        <h6 class="card-title">
+          <i class="bi bi-info-circle text-info"></i> Best Practices
+        </h6>
+        <ul class="mb-0 text-ink-600 small">
+          <li><strong>Confidentiality:</strong> Always ensure you have permission to publish case details.</li>
+          <li><strong>Anonymize:</strong> Remove or pseudonymize client names unless you have explicit consent.</li>
+          <li><strong>Outcome:</strong> Be clear about the result achieved for your client.</li>
+          <li><strong>Citations:</strong> Link to official judgments when cases are public record.</li>
+          <li><strong>Practice Areas:</strong> Tag cases with relevant areas to help visitors find examples.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

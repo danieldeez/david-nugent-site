@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ area.name }} | Practice Areas | David Nugent BL{% endblock %}
+{% block content %}
+
+<!-- Premium hero with breadcrumbs -->
+<section class="premium-hero py-5">
+  <div class="container-lg">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb breadcrumb-premium">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'practice_areas' %}">Practice Areas</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ area.name }}</li>
+      </ol>
+    </nav>
+    <h1 class="h2 fw-semibold text-white mb-0">{{ area.name }}</h1>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="py-5 bg-body">
+  <div class="container-lg">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        <div class="content-area practice-area-content">
+          {% if area.body %}
+            {{ area.body|safe }}
+          {% else %}
+            {{ area.description|linebreaks }}
+          {% endif %}
+        </div>
+
+        <!-- CTA card -->
+        <div class="card premium-card border-0 shadow-sm mt-5">
+          <div class="card-body p-4">
+            <h2 class="h5 fw-semibold mb-2">Need advice on {{ area.name|lower }}?</h2>
+            <p class="text-muted mb-3">
+              Book a consultation to discuss your matter in detail and explore your options.
+            </p>
+            <a href="/book/" class="btn btn-primary">
+              <i class="bi bi-calendar-check me-2"></i>Book consultation
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <aside class="practice-detail-aside">
+          <div class="card premium-card border-0 shadow-sm">
+            <div class="card-body">
+              <h2 class="h6 fw-semibold mb-3">Other Practice Areas</h2>
+              <ul class="list-unstyled small mb-3">
+                {% for other_area in all_areas %}
+                  {% if other_area.slug != area.slug %}
+                    <li class="mb-2">
+                      <a href="{% url 'practice_area_detail' other_area.slug %}" class="text-decoration-none text-muted practice-area-link">
+                        {{ other_area.name }} <i class="bi bi-arrow-right small"></i>
+                      </a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+              <a href="{% url 'practice_areas' %}" class="small fw-semibold text-decoration-none">
+                View all practice areas →
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

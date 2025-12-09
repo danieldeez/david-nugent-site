@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ page.title|default:"About" }} | Barrister{% endblock %}
+{% block content %}
+
+<!-- About hero with portrait and intro -->
+<section class="about-hero py-5">
+  <div class="container-lg">
+    <div class="row g-5 align-items-start">
+      <!-- Portrait and key facts -->
+      <div class="col-lg-4">
+        <aside class="about-aside card border-0 shadow-sm bg-white">
+          <div class="about-photo-frame">
+            {% if page.hero_image %}
+              <img src="{{ page.hero_image.url }}"
+                   alt="Portrait of barrister David Nugent"
+                   class="w-100 h-100 about-portrait">
+            {% else %}
+              <img src="{% static 'img/headshot.jpg' %}"
+                   alt="Portrait of barrister David Nugent"
+                   class="w-100 h-100 about-portrait">
+            {% endif %}
+          </div>
+          <div class="card-body">
+            <h1 class="h4 mb-1 about-name">David&nbsp;Nugent&nbsp;BL</h1>
+            <p class="small about-subtitle mb-3">Junior Counsel: 2021</p>
+            <ul class="list-unstyled small about-facts mb-0">
+              <li class="mb-2"><i class="bi bi-award me-2 text-primary"></i>LLB (Hons) Irish Law</li>
+              <li class="mb-2"><i class="bi bi-briefcase me-2 text-primary"></i>Barrister at Law</li>
+              <li class="mb-2"><i class="bi bi-geo-alt me-2 text-primary"></i>Dublin, Eastern &amp; Midland Circuits</li>
+              <li><i class="bi bi-check-circle me-2 text-primary"></i>Direct professional access provided</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Intro biography -->
+      <div class="col-lg-8">
+        <header class="mb-4">
+          <h2 class="h3 fw-semibold about-heading">About</h2>
+        </header>
+        <div class="about-intro text-light-premium">
+          {% if page.body %}
+            {{ page.body|safe }}
+          {% else %}
+            <p class="mb-3">David Nugent is a barrister practising at the Bar of Ireland, specialising in commercial and employment matters. Clear, practical advice for individuals and businesses.</p>
+            <p class="mb-3">He provides focused advice and advocacy to individuals, businesses and public bodies across commercial, employment and regulatory disputes, including contract disputes, unfair dismissal claims, professional discipline proceedings and statutory appeals.</p>
+            <p class="mb-0">David is instructed directly by solicitors and, where appropriate, by clients under the direct professional access scheme.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Structured credential sections -->
+<section class="py-5 bg-body">
+  <div class="container-lg">
+    <div class="row g-5">
+      <div class="col-md-6">
+        <h3 class="h5 fw-semibold mb-3">Areas of practice</h3>
+        <ul class="small text-muted mb-0 ps-3 about-list">
+          <li>Commercial/Chancery</li>
+          <li>Criminal</li>
+          <li>General Practice</li>
+          <li>Tort &amp; Personal Injury Law</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h3 class="h5 fw-semibold mb-3">Qualifications</h3>
+        <ul class="small text-muted mb-0 ps-3 about-list">
+          <li>LLB (Hons) Irish Law</li>
+          <li>Barrister at Law</li>
+          <li>Called to the Bar: 2021</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row g-5 mt-2">
+      <div class="col-md-6">
+        <h3 class="h5 fw-semibold mb-3">Circuits</h3>
+        <ul class="small text-muted mb-0 ps-3 about-list">
+          <li>Dublin Circuit</li>
+          <li>Eastern Circuit</li>
+          <li>Midland Circuit</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h3 class="h5 fw-semibold mb-3">Professional access</h3>
+        <ul class="small text-muted mb-0 ps-3 about-list">
+          <li>Direct professional access provided</li>
+          <li>Member of the Bar of Ireland</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="py-5 about-cta-strip">
+  <div class="container-lg">
+    <div class="row align-items-center gy-3">
+      <div class="col-lg-8">
+        <h3 class="h5 fw-semibold mb-1">Enquiries and instructions</h3>
+        <p class="text-muted mb-0">
+          For enquiries or to discuss a potential instruction, you can contact chambers or book a consultation.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <div class="d-flex flex-column flex-sm-row justify-content-lg-end gap-2">
+          <a href="/book/" class="btn btn-primary">Book consultation</a>
+          <a href="/contact/" class="btn btn-outline-secondary">Contact chambers</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

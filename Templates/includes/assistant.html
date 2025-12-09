@@ -1,0 +1,84 @@
+{% load static %}
+
+<!-- AI Assistant Widget -->
+<button id="assistant-btn" class="assistant-trigger" aria-label="Open assistant">
+  <i class="bi bi-chat-dots"></i>
+  <span>Assistant</span>
+</button>
+
+<div id="assistant-modal" class="assistant-modal" role="dialog" aria-labelledby="assistant-title" aria-hidden="true">
+  <div class="assistant-panel">
+    <!-- Header -->
+    <div class="assistant-header">
+      <div class="assistant-header-content">
+        <i class="bi bi-info-circle"></i>
+        <div>
+          <h6 id="assistant-title">Assistant</h6>
+          <span class="assistant-subtitle">General information only</span>
+        </div>
+      </div>
+      <button id="assistant-close" class="assistant-close-btn" aria-label="Close assistant">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Chat Body -->
+    <div id="assistant-body" class="assistant-body">
+      <div class="assistant-message assistant-message--ai">
+        <div class="assistant-avatar">
+          <i class="bi bi-chat-text"></i>
+        </div>
+        <div class="assistant-bubble">
+          Hello. I can answer general questions about the site and practice.<br>
+          For anything case-specific, please <a href="/book/">book a consultation</a>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing Indicator (hidden by default) -->
+    <div id="assistant-typing" class="assistant-typing" style="display: none;">
+      <div class="assistant-avatar">
+        <i class="bi bi-chat-text"></i>
+      </div>
+      <div class="assistant-typing-bubble">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="assistant-input-wrap">
+      <!-- Suggested Questions -->
+      <div class="assistant-suggestions" id="assistant-suggestions">
+        <button class="assistant-suggestion-btn" data-question="What areas does David specialise in?">
+          What areas does David specialise in?
+        </button>
+        <button class="assistant-suggestion-btn" data-question="How do I book a consultation?">
+          How do I book a consultation?
+        </button>
+        <button class="assistant-suggestion-btn" data-question="Where are consultations held?">
+          Where are consultations held?
+        </button>
+        <button class="assistant-suggestion-btn" data-question="Can I learn more about the commercial practice area?">
+          Can I learn more about commercial practice?
+        </button>
+      </div>
+
+      <div class="assistant-input-container">
+        <input
+          id="assistant-input"
+          type="text"
+          class="assistant-input"
+          placeholder="Ask about practice areas, fees, or booking…"
+          autocomplete="off"
+          aria-label="Message input"
+        />
+        <button id="assistant-send" class="assistant-send-btn" aria-label="Send message">
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </div>
+      <div class="assistant-disclaimer">
+        General information only. Not legal advice.
+      </div>
+    </div>
+  </div>
+</div>

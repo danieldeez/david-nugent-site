@@ -1,0 +1,41 @@
+from django.urls import path
+from django.contrib.auth import views as auth_views
+from . import views
+
+urlpatterns = [
+    path("", views.home, name="home"),
+    path("about/", views.about, name="about"),
+    path("practice-areas/", views.practice_areas, name="practice_areas"),
+    path("practice-areas/<slug:slug>/", views.practice_area_detail, name="practice_area_detail"),
+    path("book/", views.book, name="book"),
+    path("contact/", views.contact, name="contact"),
+    path("privacy/", views.privacy, name="privacy"),
+    path("terms/", views.terms, name="terms"),
+    path("blog/", views.blog_list, name="blog_list"),
+    path("blog/<slug:slug>/", views.blog_detail, name="blog_detail"),
+    path("cases/", views.case_list, name="case_list"),
+    path("cases/<slug:slug>/", views.case_detail, name="case_detail"),
+    path("webhooks/calendly/", views.calendly_webhook, name="calendly_webhook"),
+    path("api/assist/", views.ai_assist, name="ai_assist"),
+
+    # Owner area (obscure URL for security)
+    path("site-access-dk2847/", auth_views.LoginView.as_view(template_name="SitePages/owner_login.html"), name="owner_login"),
+    path("owner/logout/", auth_views.LogoutView.as_view(next_page="/"), name="owner_logout"),
+    path("owner/", views.owner_dashboard, name="owner_dashboard"),
+    path("owner/homepage/", views.owner_edit_homepage, name="owner_edit_homepage"),
+    path("owner/about/", views.owner_edit_about, name="owner_edit_about"),
+    path("owner/site-pages/", views.owner_site_pages_list, name="owner_site_pages"),
+    path("owner/site-pages/<slug:slug>/", views.owner_edit_site_page, name="owner_edit_site_page"),
+    path("owner/practice-areas/", views.owner_practice_area_list, name="owner_practice_area_list"),
+    path("owner/practice-areas/new/", views.owner_practice_area_create, name="owner_practice_area_create"),
+    path("owner/practice-areas/<int:pk>/", views.owner_practice_area_edit, name="owner_practice_area_edit"),
+    path("owner/practice-areas/<int:pk>/delete/", views.owner_practice_area_delete, name="owner_practice_area_delete"),
+    path("owner/blog/", views.owner_blog_list, name="owner_blog_list"),
+    path("owner/blog/new/", views.owner_blog_create, name="owner_blog_create"),
+    path("owner/blog/<int:pk>/", views.owner_blog_edit, name="owner_blog_edit"),
+    path("owner/blog/<int:pk>/delete/", views.owner_blog_delete, name="owner_blog_delete"),
+    path("owner/cases/", views.owner_case_list, name="owner_case_list"),
+    path("owner/cases/new/", views.owner_case_create, name="owner_case_create"),
+    path("owner/cases/<int:pk>/", views.owner_case_edit, name="owner_case_edit"),
+    path("owner/cases/<int:pk>/delete/", views.owner_case_delete, name="owner_case_delete"),
+]

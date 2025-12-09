@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Owner Dashboard | Barrister{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-1">Owner Dashboard</h1>
+        <p class="text-ink-600 mb-0">Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+      </div>
+      <a href="{% url 'owner_logout' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-box-arrow-right"></i> Sign out
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="alert alert-info mb-4">
+      <i class="bi bi-info-circle"></i>
+      <strong>Content management area</strong> — Use the links below to manage your website content. Changes will be visible immediately on the public site.
+    </div>
+
+    <div class="row g-4">
+      <!-- Homepage -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                <i class="bi bi-house-door text-primary" style="font-size: 1.5rem;"></i>
+              </div>
+              <h5 class="card-title mb-0">Homepage</h5>
+            </div>
+            <p class="card-text text-ink-600">Edit hero section heading and subheading.</p>
+            <a href="{% url 'owner_edit_homepage' %}" class="btn btn-sm btn-primary">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- About Page -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                <i class="bi bi-person-circle text-primary" style="font-size: 1.5rem;"></i>
+              </div>
+              <h5 class="card-title mb-0">About Page</h5>
+            </div>
+            <p class="card-text text-ink-600">Update your biography and credentials.</p>
+            <a href="{% url 'owner_edit_about' %}" class="btn btn-sm btn-primary">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practice Areas -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-success bg-opacity-10 rounded p-2 me-3">
+                <i class="bi bi-briefcase text-success" style="font-size: 1.5rem;"></i>
+              </div>
+              <h5 class="card-title mb-0">Practice Areas</h5>
+            </div>
+            <p class="card-text text-ink-600">Add, edit, or remove practice areas.</p>
+            <a href="{% url 'owner_practice_area_list' %}" class="btn btn-sm btn-success">
+              <i class="bi bi-pencil"></i> Manage
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blog Posts -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-info bg-opacity-10 rounded p-2 me-3">
+                <i class="bi bi-journal-text text-info" style="font-size: 1.5rem;"></i>
+              </div>
+              <h5 class="card-title mb-0">Blog Posts</h5>
+            </div>
+            <p class="card-text text-ink-600">Write and publish articles for your blog.</p>
+            <a href="{% url 'owner_blog_list' %}" class="btn btn-sm btn-info">
+              <i class="bi bi-pencil"></i> Manage
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case Studies -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-warning bg-opacity-10 rounded p-2 me-3">
+                <i class="bi bi-folder text-warning" style="font-size: 1.5rem;"></i>
+              </div>
+              <h5 class="card-title mb-0">Case Studies</h5>
+            </div>
+            <p class="card-text text-ink-600">Showcase your successful cases and outcomes.</p>
+            <a href="{% url 'owner_case_list' %}" class="btn btn-sm btn-warning">
+              <i class="bi bi-pencil"></i> Manage
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Site Pages -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-secondary bg-opacity-10 rounded p-2 me-3">
+                <i class="bi bi-file-text text-secondary" style="font-size: 1.5rem;"></i>
+              </div>
+              <h5 class="card-title mb-0">Site Pages</h5>
+            </div>
+            <p class="card-text text-ink-600">Edit privacy policy, terms, and other pages.</p>
+            <a href="{% url 'owner_site_pages' %}" class="btn btn-sm btn-secondary">
+              <i class="bi bi-pencil"></i> Manage
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4 border-primary">
+      <div class="card-body">
+        <h6 class="card-title">
+          <i class="bi bi-shield-check text-primary"></i> Admin Panel
+        </h6>
+        <p class="card-text text-ink-600 mb-3">
+          For advanced configuration, media uploads, and user management, access the full Django admin panel.
+        </p>
+        <a href="/admin/" class="btn btn-sm btn-outline-primary" target="_blank">
+          <i class="bi bi-gear"></i> Open Admin Panel
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

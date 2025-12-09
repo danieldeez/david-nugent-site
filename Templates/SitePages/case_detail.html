@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ case.title }} | Case Studies | David Nugent BL{% endblock %}
+{% block content %}
+
+<!-- Premium hero header -->
+<section class="premium-hero py-5">
+  <div class="container-lg">
+    <div class="mx-auto" style="max-width: 860px;">
+      <!-- Practice areas badges -->
+      {% if case.practice_areas.all %}
+        <div class="mb-3">
+          {% for pa in case.practice_areas.all %}
+            <span class="badge case-badge-premium me-2">{{ pa.name }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Title -->
+      <h1 class="h2 fw-semibold text-white mb-0">{{ case.title }}</h1>
+    </div>
+  </div>
+</section>
+
+<!-- Hero image (optional) -->
+{% if case.hero_image %}
+<section class="py-4 bg-light">
+  <div class="container-lg">
+    <div class="mx-auto" style="max-width: 1000px;">
+      <div class="ratio ratio-21x9">
+        <img src="{{ case.hero_image.url }}" alt="{{ case.title }}" class="w-100 h-100 object-fit-cover rounded">
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Article content -->
+<section class="py-5 bg-body">
+  <div class="container-lg">
+    <article class="content-area mx-auto" style="max-width: 860px;">
+      {{ case.body|safe }}
+
+      <!-- Citation reference -->
+      {% if case.citation_url %}
+      <div class="mt-5 p-4 rounded border premium-citation-box">
+        <p class="small text-muted mb-1"><strong>Reference</strong></p>
+        <p class="small mb-0">
+          {% if case.citation_name %}{{ case.citation_name }} – {% endif %}
+          <a href="{{ case.citation_url }}" target="_blank" rel="noopener" class="text-decoration-none">
+            View source <i class="bi bi-box-arrow-up-right small"></i>
+          </a>
+        </p>
+      </div>
+      {% endif %}
+
+      <!-- Navigation footer -->
+      <section class="mt-5 pt-4 border-top">
+        <p class="small text-muted mb-2">This note provides general information only and does not constitute legal advice.</p>
+        <p class="mb-3">
+          If you require advice on a specific matter, you can <a href="/contact/" class="text-decoration-none">contact chambers</a> or <a href="/book/" class="text-decoration-none">book a consultation</a>.
+        </p>
+        <p class="mb-0">
+          <a href="/cases/" class="text-decoration-none small fw-semibold">
+            <i class="bi bi-arrow-left me-2"></i>Back to case studies
+          </a>
+        </p>
+      </section>
+    </article>
+  </div>
+</section>
+
+{% endblock %}

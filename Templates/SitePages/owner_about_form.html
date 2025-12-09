@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Edit About Page | Owner Area{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="mb-4">
+          <a href="{% url 'owner_dashboard' %}" class="link-ink">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+          </a>
+        </div>
+
+        <div class="card">
+          <div class="card-body p-4">
+            <h1 class="h3 mb-3">Edit About Page</h1>
+            <p class="text-ink-600 mb-4">Update your biography, credentials, and professional information.</p>
+
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="mb-4">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+                {% if form.title.errors %}
+                  <div class="text-danger small mt-1">{{ form.title.errors }}</div>
+                {% endif %}
+                <div class="form-text">The main heading for the About page.</div>
+              </div>
+
+              <div class="mb-4">
+                {{ form.body.label_tag }}
+                {{ form.body }}
+                {% if form.body.errors %}
+                  <div class="text-danger small mt-1">{{ form.body.errors }}</div>
+                {% endif %}
+                <div class="form-text">
+                  Your biography and professional information. You can use basic HTML for formatting
+                  (<code>&lt;p&gt;</code>, <code>&lt;br&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, etc.).
+                </div>
+              </div>
+
+              <div class="mb-4">
+                {{ form.hero_image.label_tag }}
+                {% if form.instance.hero_image %}
+                  <div class="mb-3">
+                    <img src="{{ form.instance.hero_image.url }}"
+                         alt="Current portrait"
+                         class="img-thumbnail"
+                         style="max-width: 200px; max-height: 250px; object-fit: cover; border-radius: 8px;">
+                    <div class="form-text mt-2">Current portrait image</div>
+                  </div>
+                {% endif %}
+                {{ form.hero_image }}
+                {% if form.hero_image.errors %}
+                  <div class="text-danger small mt-1">{{ form.hero_image.errors }}</div>
+                {% endif %}
+                <div class="form-text">{{ form.hero_image.help_text }}</div>
+              </div>
+
+              <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-cta">
+                  <i class="bi bi-check-lg me-2"></i>Save Changes
+                </button>
+                <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-3">
+          <div class="col-md-6">
+            <div class="card border-info h-100">
+              <div class="card-body">
+                <h6 class="card-title">
+                  <i class="bi bi-info-circle text-info"></i> Preview
+                </h6>
+                <p class="card-text text-ink-600 mb-2">
+                  View the live <a href="/about/" target="_blank">About page</a> to see your changes.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card border-warning h-100">
+              <div class="card-body">
+                <h6 class="card-title">
+                  <i class="bi bi-exclamation-triangle text-warning"></i> Advanced Editing
+                </h6>
+                <p class="card-text text-ink-600 mb-2">
+                  For rich formatting and image uploads, use the <a href="/admin/pages/sitepage/" target="_blank">Django admin</a>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

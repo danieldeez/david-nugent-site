@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+
+<!-- Premium hero header -->
+<section class="blog-detail-hero py-5">
+  <div class="container-lg">
+    <div class="mx-auto" style="max-width: 800px;">
+
+      <!-- Meta info -->
+      <div class="d-flex flex-wrap align-items-center gap-3 mb-3 blog-detail-meta">
+        {% if post.published_at %}
+        <span class="small text-white" style="opacity: 0.85;">{{ post.published_at|date:"j F Y" }}</span>
+        {% endif %}
+      </div>
+
+      <!-- Title -->
+      <h1 class="blog-detail-title text-white mb-0">{{ post.title }}</h1>
+
+    </div>
+  </div>
+</section>
+
+<!-- Optional hero image -->
+{% if post.hero_image %}
+<section class="py-4" style="background: #F5F6F7;">
+  <div class="container-lg">
+    <div class="mx-auto" style="max-width: 1000px;">
+      <div class="blog-detail-hero-img ratio ratio-21x9">
+        <img src="{{ post.hero_image.url }}" alt="{{ post.title }}" class="w-100 h-100 object-fit-cover">
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Article content -->
+<section class="py-5" style="background: #F5F6F7;">
+  <div class="container-lg">
+    <article class="blog-article mx-auto">
+      {{ post.body|safe }}
+
+      {% if post.source_url %}
+      <div class="mt-4 p-3 rounded border" style="background: #ffffff;">
+        <p class="small text-muted mb-1"><strong>Source</strong></p>
+        <p class="small mb-0">{% if post.source_name %}{{ post.source_name }} – {% endif %}<a href="{{ post.source_url }}" target="_blank" rel="noopener">Read original article <i class="bi bi-box-arrow-up-right"></i></a></p>
+      </div>
+      {% endif %}
+
+      <section class="blog-cta-strip mt-5 pt-4 border-top">
+        <p class="small text-muted mb-2">This note provides general information only and does not constitute legal advice.</p>
+        <p class="mb-3">If you require advice on a specific matter, you can <a href="/contact/">contact chambers</a> or <a href="/book/">book a consultation</a>.</p>
+        <p class="mb-0"><a href="/blog/" class="text-decoration-none"><i class="bi bi-arrow-left me-2"></i>Back to insights</a></p>
+      </section>
+    </article>
+  </div>
+</section>
+{% endblock %}

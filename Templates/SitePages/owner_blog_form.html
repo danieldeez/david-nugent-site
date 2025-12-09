@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}Create Blog Post{% else %}Edit {{ post.title }}{% endif %} | Owner{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container" style="max-width: 900px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-1">
+          {% if is_create %}
+            Create Blog Post
+          {% else %}
+            Edit: {{ post.title }}
+          {% endif %}
+        </h1>
+        <p class="text-ink-600 mb-0">
+          {% if is_create %}
+            Write a new article for your blog
+          {% else %}
+            <span class="badge bg-secondary">{{ post.slug }}</span>
+            {% if post.published %}
+              <span class="badge bg-success">Published</span>
+            {% else %}
+              <span class="badge bg-secondary">Draft</span>
+            {% endif %}
+          {% endif %}
+        </p>
+      </div>
+      <a href="{% url 'owner_blog_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white border-bottom">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-journal-text text-info me-2" style="font-size: 1.25rem;"></i>
+          <h5 class="mb-0">Blog Post Details</h5>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          <div class="mb-4">
+            <label for="{{ form.title.id_for_label }}" class="form-label fw-semibold">
+              {{ form.title.label }}
+              <span class="text-danger">*</span>
+            </label>
+            {{ form.title }}
+            {% if form.title.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.title.errors }}
+              </div>
+            {% endif %}
+            <small class="text-muted d-block mt-1">
+              The main heading for your blog post.
+            </small>
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.slug.id_for_label }}" class="form-label fw-semibold">
+              {{ form.slug.label }}
+              <span class="text-danger">*</span>
+            </label>
+            {{ form.slug }}
+            {% if form.slug.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.slug.errors }}
+              </div>
+            {% endif %}
+            {% if form.slug.help_text %}
+              <small class="text-muted d-block mt-1">
+                {{ form.slug.help_text }}
+              </small>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.summary.id_for_label }}" class="form-label fw-semibold">
+              {{ form.summary.label }}
+            </label>
+            {{ form.summary }}
+            {% if form.summary.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.summary.errors }}
+              </div>
+            {% endif %}
+            {% if form.summary.help_text %}
+              <small class="text-muted d-block mt-1">
+                {{ form.summary.help_text }}
+              </small>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">
+              <i class="bi bi-link-45deg"></i> Source (optional)
+            </h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="{{ form.source_name.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.source_name.label }}
+                </label>
+                {{ form.source_name }}
+                {% if form.source_name.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.source_name.errors }}
+                  </div>
+                {% endif %}
+                {% if form.source_name.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.source_name.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label for="{{ form.source_url.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.source_url.label }}
+                </label>
+                {{ form.source_url }}
+                {% if form.source_url.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.source_url.errors }}
+                  </div>
+                {% endif %}
+                {% if form.source_url.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.source_url.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.body.id_for_label }}" class="form-label fw-semibold">
+              {{ form.body.label }}
+              <span class="text-danger">*</span>
+            </label>
+            {{ form.body }}
+            {% if form.body.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.body.errors }}
+              </div>
+            {% endif %}
+            <small class="text-muted d-block mt-1">
+              The full content of your blog post. HTML formatting is supported.
+            </small>
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.hero_image.id_for_label }}" class="form-label fw-semibold">
+              {{ form.hero_image.label }}
+            </label>
+            {{ form.hero_image }}
+            {% if form.hero_image.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.hero_image.errors }}
+              </div>
+            {% endif %}
+            {% if form.hero_image.help_text %}
+              <small class="text-muted d-block mt-1">
+                {{ form.hero_image.help_text }}
+              </small>
+            {% endif %}
+            {% if post.hero_image and not is_create %}
+              <div class="mt-2">
+                <small class="text-muted">Current image:</small><br>
+                <img src="{{ post.hero_image.url }}" alt="Hero image" class="img-thumbnail" style="max-width: 300px; max-height: 200px;">
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="card mb-4 bg-light border-0">
+            <div class="card-body">
+              <h6 class="card-title">
+                <i class="bi bi-calendar-check text-info"></i> Publication Settings
+              </h6>
+
+              <div class="form-check mb-3">
+                {{ form.published }}
+                <label class="form-check-label" for="{{ form.published.id_for_label }}">
+                  {{ form.published.label }}
+                </label>
+                {% if form.published.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.published.errors }}
+                  </div>
+                {% endif %}
+                {% if form.published.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.published.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+
+              <div>
+                <label for="{{ form.published_at.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.published_at.label }}
+                </label>
+                {{ form.published_at }}
+                {% if form.published_at.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.published_at.errors }}
+                  </div>
+                {% endif %}
+                {% if form.published_at.help_text %}
+                  <small class="text-muted d-block mt-1">
+                    {{ form.published_at.help_text }}
+                  </small>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 pt-3 border-top">
+            <button type="submit" class="btn btn-info">
+              <i class="bi bi-check-lg"></i> {% if is_create %}Create Blog Post{% else %}Save Changes{% endif %}
+            </button>
+            <a href="{% url 'owner_blog_list' %}" class="btn btn-outline-secondary">
+              Cancel
+            </a>
+            {% if not is_create and post.published %}
+              <a href="{{ post.get_absolute_url }}" class="btn btn-outline-secondary ms-auto" target="_blank">
+                <i class="bi bi-eye"></i> View Public Post
+              </a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mt-4 border-warning">
+      <div class="card-body">
+        <h6 class="card-title">
+          <i class="bi bi-info-circle text-warning"></i> Writing Tips
+        </h6>
+        <ul class="mb-0 text-ink-600 small">
+          <li><strong>Title:</strong> Make it clear and engaging. This is what readers see first.</li>
+          <li><strong>Slug:</strong> Will be used in URLs like /blog/your-slug-here/</li>
+          <li><strong>Summary:</strong> Write a compelling excerpt (2-3 sentences) for the blog listing.</li>
+          <li><strong>Body:</strong> Use the rich text editor for formatting. Keep paragraphs short and scannable.</li>
+          <li><strong>Draft Mode:</strong> Uncheck "Published" to save drafts that won't appear publicly.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

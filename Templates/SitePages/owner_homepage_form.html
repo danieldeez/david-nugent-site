@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Edit Homepage | Owner Area{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="mb-4">
+          <a href="{% url 'owner_dashboard' %}" class="link-ink">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+          </a>
+        </div>
+
+        <div class="card">
+          <div class="card-body p-4">
+            <h1 class="h3 mb-3">Edit Homepage Hero</h1>
+            <p class="text-ink-600 mb-4">Update the main heading and subheading displayed on the homepage.</p>
+
+            <form method="post">
+              {% csrf_token %}
+
+              <div class="mb-4">
+                {{ form.hero_heading.label_tag }}
+                {{ form.hero_heading }}
+                {% if form.hero_heading.errors %}
+                  <div class="text-danger small mt-1">{{ form.hero_heading.errors }}</div>
+                {% endif %}
+                <div class="form-text">The main headline displayed prominently on the homepage.</div>
+              </div>
+
+              <div class="mb-4">
+                {{ form.hero_subheading.label_tag }}
+                {{ form.hero_subheading }}
+                {% if form.hero_subheading.errors %}
+                  <div class="text-danger small mt-1">{{ form.hero_subheading.errors }}</div>
+                {% endif %}
+                <div class="form-text">Supporting text below the headline. Use line breaks for multiple lines.</div>
+              </div>
+
+              <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-cta">
+                  <i class="bi bi-check-lg me-2"></i>Save Changes
+                </button>
+                <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card mt-4 border-info">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="bi bi-info-circle text-info"></i> Preview
+            </h6>
+            <p class="card-text text-ink-600 mb-2">
+              Changes will be visible immediately on the <a href="/" target="_blank">homepage</a> after saving.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

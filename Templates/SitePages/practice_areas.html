@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Practice Areas | David Nugent BL{% endblock %}
+{% block content %}
+
+<!-- Premium hero header -->
+<section class="premium-hero py-5">
+  <div class="container-lg">
+    <header class="mb-0">
+      <h1 class="h2 fw-semibold text-white mb-3">Practice Areas</h1>
+      <p class="lead text-light-premium mb-0" style="max-width: 720px;">
+        Focused practice across the Dublin, Eastern and Midland Circuits. Direct professional access provided.
+      </p>
+    </header>
+  </div>
+</section>
+
+<!-- Practice areas grid -->
+<section class="py-5 bg-body">
+  <div class="container-lg">
+    {% if areas %}
+      <div class="row g-4">
+        {% for area in areas %}
+          <div class="col-12 col-md-6 col-lg-4 d-flex">
+            <div class="card premium-card h-100 border-0 shadow-sm">
+              <div class="card-body d-flex flex-column">
+                <h3 class="h4 fw-semibold mb-3">{{ area.name }}</h3>
+                <p class="text-muted mb-4 flex-grow-1">
+                  {% if area.short_summary %}
+                    {{ area.short_summary }}
+                  {% else %}
+                    {{ area.body|striptags|truncatewords:20 }}
+                  {% endif %}
+                </p>
+                {% if area.slug %}
+                  <a href="{% url 'practice_area_detail' area.slug %}" class="btn btn-sm btn-outline-secondary">
+                    Learn more <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-light border">
+        <i class="bi bi-info-circle text-muted"></i>
+        Practice areas are being updated. Please check back soon or <a href="/contact/">contact chambers</a> directly.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- CTA strip -->
+<section class="py-5 premium-cta-strip">
+  <div class="container-lg">
+    <div class="row align-items-center gy-3">
+      <div class="col-lg-8">
+        <h2 class="h4 fw-semibold mb-1">Discuss your matter</h2>
+        <p class="text-muted mb-0">
+          Book a consultation to review your case and discuss your options.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="/book/" class="btn btn-primary px-4">
+          <i class="bi bi-calendar-check me-2"></i>Book consultation
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

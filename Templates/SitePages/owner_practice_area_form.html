@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}Add Practice Area{% else %}Edit {{ area.name }}{% endif %} | Owner{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container" style="max-width: 900px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-1">
+          {% if is_create %}
+            Add Practice Area
+          {% else %}
+            Edit: {{ area.name }}
+          {% endif %}
+        </h1>
+        <p class="text-ink-600 mb-0">
+          {% if is_create %}
+            Create a new area of legal expertise
+          {% else %}
+            <span class="badge bg-secondary">{{ area.slug }}</span>
+          {% endif %}
+        </p>
+      </div>
+      <a href="{% url 'owner_practice_area_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white border-bottom">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-briefcase text-success me-2" style="font-size: 1.25rem;"></i>
+          <h5 class="mb-0">Practice Area Details</h5>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          <div class="row">
+            <div class="col-md-8 mb-4">
+              <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">
+                {{ form.name.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.name }}
+              {% if form.name.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.name.errors }}
+                </div>
+              {% endif %}
+              <small class="text-muted d-block mt-1">
+                The display name for this practice area (e.g., "Employment Law").
+              </small>
+            </div>
+
+            <div class="col-md-4 mb-4">
+              <label for="{{ form.order.id_for_label }}" class="form-label fw-semibold">
+                {{ form.order.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.order }}
+              {% if form.order.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.order.errors }}
+                </div>
+              {% endif %}
+              {% if form.order.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.order.help_text }}
+                </small>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.slug.id_for_label }}" class="form-label fw-semibold">
+              {{ form.slug.label }}
+              <span class="text-danger">*</span>
+            </label>
+            {{ form.slug }}
+            {% if form.slug.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.slug.errors }}
+              </div>
+            {% endif %}
+            {% if form.slug.help_text %}
+              <small class="text-muted d-block mt-1">
+                {{ form.slug.help_text }}
+              </small>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.short_summary.id_for_label }}" class="form-label fw-semibold">
+              {{ form.short_summary.label }}
+            </label>
+            {{ form.short_summary }}
+            {% if form.short_summary.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.short_summary.errors }}
+              </div>
+            {% endif %}
+            {% if form.short_summary.help_text %}
+              <small class="text-muted d-block mt-1">
+                {{ form.short_summary.help_text }}
+              </small>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.body.id_for_label }}" class="form-label fw-semibold">
+              {{ form.body.label }}
+            </label>
+            {{ form.body }}
+            {% if form.body.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.body.errors }}
+              </div>
+            {% endif %}
+            {% if form.body.help_text %}
+              <small class="text-muted d-block mt-1">
+                {{ form.body.help_text }}
+              </small>
+            {% endif %}
+          </div>
+
+          <div class="d-flex gap-2 pt-3 border-top">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-lg"></i> {% if is_create %}Create Practice Area{% else %}Save Changes{% endif %}
+            </button>
+            <a href="{% url 'owner_practice_area_list' %}" class="btn btn-outline-secondary">
+              Cancel
+            </a>
+            {% if not is_create %}
+              <a href="{% url 'practice_area_detail' area.slug %}" class="btn btn-outline-secondary ms-auto" target="_blank">
+                <i class="bi bi-eye"></i> Preview Page
+              </a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mt-4 border-warning">
+      <div class="card-body">
+        <h6 class="card-title">
+          <i class="bi bi-info-circle text-warning"></i> Additional Information
+        </h6>
+        <p class="mb-2 text-ink-600 small">
+          After creating a practice area, you can add detailed content (full description, case examples, etc.) by editing it through the Django admin panel if needed.
+        </p>
+        <ul class="mb-0 text-ink-600 small">
+          <li><strong>Name:</strong> Keep it clear and professional (e.g., "Commercial Litigation").</li>
+          <li><strong>Slug:</strong> Will be used in URLs like /practice-areas/commercial-litigation/</li>
+          <li><strong>Order:</strong> Practice areas are displayed in ascending order (0, 10, 20, etc.).</li>
+          <li><strong>Short Summary:</strong> Brief teaser text shown on practice area cards (keep it concise ~1-2 lines).</li>
+          <li><strong>Body:</strong> Full rich-text description shown on the practice area detail page.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

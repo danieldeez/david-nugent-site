@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ page.title }} | Owner{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container" style="max-width: 900px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-1">Edit: {{ page.title }}</h1>
+        <p class="text-ink-600 mb-0">
+          <span class="badge bg-secondary">{{ page.slug }}</span>
+          <span class="text-muted ms-2">Last updated: {{ page.updated_at|date:"M d, Y g:i A" }}</span>
+        </p>
+      </div>
+      <a href="{% url 'owner_site_pages' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white border-bottom">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-pencil-square text-primary me-2" style="font-size: 1.25rem;"></i>
+          <h5 class="mb-0">Page Content</h5>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="alert alert-light border mb-4">
+            <small class="text-muted">
+              <i class="bi bi-info-circle"></i>
+              <strong>Page URL:</strong> This page appears at
+              {% if page.slug == 'privacy' %}
+                <a href="{% url 'privacy' %}" target="_blank" class="text-decoration-none">/privacy/</a>
+              {% elif page.slug == 'terms' %}
+                <a href="{% url 'terms' %}" target="_blank" class="text-decoration-none">/terms/</a>
+              {% elif page.slug == 'about' %}
+                <a href="{% url 'about' %}" target="_blank" class="text-decoration-none">/about/</a>
+              {% else %}
+                <code>/{{ page.slug }}/</code>
+              {% endif %}
+            </small>
+          </div>
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          <div class="mb-4">
+            <label for="{{ form.title.id_for_label }}" class="form-label fw-semibold">
+              {{ form.title.label }}
+              <span class="text-danger">*</span>
+            </label>
+            {{ form.title }}
+            {% if form.title.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.title.errors }}
+              </div>
+            {% endif %}
+            <small class="text-muted d-block mt-1">
+              The page title that appears in the browser tab and at the top of the page.
+            </small>
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.body.id_for_label }}" class="form-label fw-semibold">
+              {{ form.body.label }}
+              <span class="text-danger">*</span>
+            </label>
+            {{ form.body }}
+            {% if form.body.errors %}
+              <div class="text-danger small mt-1">
+                {{ form.body.errors }}
+              </div>
+            {% endif %}
+            {% if form.body.help_text %}
+              <small class="text-muted d-block mt-1">
+                {{ form.body.help_text }}
+              </small>
+            {% endif %}
+          </div>
+
+          <div class="d-flex gap-2 pt-3 border-top">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg"></i> Save Changes
+            </button>
+            <a href="{% url 'owner_site_pages' %}" class="btn btn-outline-secondary">
+              Cancel
+            </a>
+            {% if page.slug == 'privacy' %}
+              <a href="{% url 'privacy' %}" class="btn btn-outline-secondary ms-auto" target="_blank">
+                <i class="bi bi-eye"></i> Preview Page
+              </a>
+            {% elif page.slug == 'terms' %}
+              <a href="{% url 'terms' %}" class="btn btn-outline-secondary ms-auto" target="_blank">
+                <i class="bi bi-eye"></i> Preview Page
+              </a>
+            {% elif page.slug == 'about' %}
+              <a href="{% url 'about' %}" class="btn btn-outline-secondary ms-auto" target="_blank">
+                <i class="bi bi-eye"></i> Preview Page
+              </a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mt-4 border-warning">
+      <div class="card-body">
+        <h6 class="card-title">
+          <i class="bi bi-lightbulb text-warning"></i> Formatting Tips
+        </h6>
+        <ul class="mb-0 text-ink-600 small">
+          <li>HTML is supported in the content field. Use standard tags like <code>&lt;p&gt;</code>, <code>&lt;h6&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;li&gt;</code>, etc.</li>
+          <li>For better formatting, consider using the Django admin's rich text editor.</li>
+          <li>Changes are visible immediately on the public site after saving.</li>
+          {% if page.slug == 'privacy' %}
+            <li><strong>Privacy Policy:</strong> Ensure you include data collection practices, lawful basis (GDPR), and user rights.</li>
+          {% elif page.slug == 'terms' %}
+            <li><strong>Terms of Use:</strong> Clarify that information is general, not legal advice, and outline jurisdiction.</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

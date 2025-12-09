@@ -15,10 +15,11 @@ mydjango/
 
 # Django
 *.log
-db.sqlite3
 db.sqlite3-journal
 /staticfiles/
 /media/
+
+# NOTE: db.sqlite3 is intentionally NOT ignored to deploy initial content to Render
 
 # Environment variables
 .env
@@ -42,7 +43,6 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-*.sqlite3
 /static_collected/
 .coverage
 htmlcov/

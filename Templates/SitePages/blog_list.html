@@ -24,7 +24,7 @@
 
           {% if post.hero_image %}
           <div class="ratio ratio-16x9 blog-card-img-wrapper">
-            <img src="{% static 'img/' %}{{ post.hero_image }}" alt="{{ post.title }}" class="w-100 h-100 object-fit-cover">
+            <img src="/static/img/{{ post.hero_image }}" alt="{{ post.title }}" class="w-100 h-100 object-fit-cover">
           </div>
           {% else %}
           <div class="ratio ratio-16x9 blog-card-img-placeholder"></div>

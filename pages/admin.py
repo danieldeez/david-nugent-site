@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lead, SitePage, PracticeArea, BlogPost, CaseStudy, Booking, HomepageSettings
+from .models import Lead, SitePage, PracticeArea, BlogPost, CaseStudy, Booking, HomepageSettings, AvailabilitySlot, BookingSubmission
 
 @admin.register(HomepageSettings)
 class HomepageSettingsAdmin(admin.ModelAdmin):
@@ -66,5 +66,35 @@ class CaseStudyAdmin(admin.ModelAdmin):
         }),
         ("Publication", {
             "fields": ("published", "published_at")
+        }),
+    )
+
+@admin.register(AvailabilitySlot)
+class AvailabilitySlotAdmin(admin.ModelAdmin):
+    list_display = ("date", "start_time", "end_time", "slot_type", "is_available", "created_at")
+    list_filter = ("is_available", "slot_type", "date")
+    search_fields = ("notes",)
+    date_hierarchy = "date"
+    list_editable = ("is_available",)
+    ordering = ("date", "start_time")
+
+@admin.register(BookingSubmission)
+class BookingSubmissionAdmin(admin.ModelAdmin):
+    list_display = ("name", "email", "slot", "is_paid", "created_at")
+    list_filter = ("is_paid", "created_at", "slot__date")
+    search_fields = ("name", "email", "phone", "description")
+    readonly_fields = ("created_at",)
+    list_editable = ("is_paid",)
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
+    fieldsets = (
+        ("Client Information", {
+            "fields": ("name", "email", "phone")
+        }),
+        ("Booking Details", {
+            "fields": ("slot", "description")
+        }),
+        ("Payment & Status", {
+            "fields": ("is_paid", "created_at")
         }),
     )

@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Booking Confirmed | Book a Consultation{% endblock %}
+{% block content %}
+
+<main class="py-5 bg-body">
+  <section class="py-4">
+    <div class="container-xl" style="max-width: 900px;">
+      <!-- Success header -->
+      <div class="text-center mb-5">
+        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+             style="width: 80px; height: 80px;">
+          <i class="bi bi-check-lg text-success" style="font-size: 2.5rem;"></i>
+        </div>
+        <h1 class="h3 fw-semibold mb-2">Booking Submitted Successfully</h1>
+        <p class="text-muted mb-0">
+          Your consultation has been reserved. Please complete payment to confirm.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <!-- Booking summary -->
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom">
+              <h2 class="h5 fw-semibold mb-0">Booking Summary</h2>
+            </div>
+            <div class="card-body p-4">
+              <div class="mb-4 pb-4 border-bottom">
+                <h3 class="h6 fw-semibold mb-2">Consultation Details</h3>
+                <p class="mb-1">
+                  <i class="bi bi-calendar-event text-primary me-2"></i>
+                  <strong>Date:</strong> {{ booking.slot.date|date:"l, F j, Y" }}
+                </p>
+                <p class="mb-1">
+                  <i class="bi bi-clock text-primary me-2"></i>
+                  <strong>Time:</strong> {{ booking.slot.start_time|time:"g:i A" }} - {{ booking.slot.end_time|time:"g:i A" }}
+                </p>
+                <p class="mb-0">
+                  <i class="bi bi-tag text-primary me-2"></i>
+                  <strong>Type:</strong> {{ booking.slot.get_slot_type_display }}
+                </p>
+              </div>
+
+              <div class="mb-4 pb-4 border-bottom">
+                <h3 class="h6 fw-semibold mb-2">Your Details</h3>
+                <p class="mb-1">
+                  <i class="bi bi-person text-primary me-2"></i>
+                  <strong>Name:</strong> {{ booking.name }}
+                </p>
+                <p class="mb-1">
+                  <i class="bi bi-envelope text-primary me-2"></i>
+                  <strong>Email:</strong> {{ booking.email }}
+                </p>
+                {% if booking.phone %}
+                  <p class="mb-0">
+                    <i class="bi bi-telephone text-primary me-2"></i>
+                    <strong>Phone:</strong> {{ booking.phone }}
+                  </p>
+                {% endif %}
+              </div>
+
+              <div>
+                <h3 class="h6 fw-semibold mb-2">Matter Description</h3>
+                <p class="mb-0 text-muted small" style="line-height: 1.6;">
+                  {{ booking.description }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment instructions -->
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom">
+              <h2 class="h5 fw-semibold mb-0">Payment Instructions</h2>
+            </div>
+            <div class="card-body p-4 text-center">
+              <div class="alert alert-warning text-start">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Action Required:</strong> Please complete payment via Revolut to confirm your booking.
+              </div>
+
+              <!-- QR Code placeholder -->
+              <div class="my-4">
+                <p class="mb-3 fw-semibold">Scan to Pay via Revolut</p>
+                <div class="d-inline-block p-3 border rounded bg-white">
+                  {% load static %}
+                  <img src="{% static 'img/revolut-qr.png' %}"
+                       alt="Revolut QR Code"
+                       class="img-fluid"
+                       style="max-width: 200px; height: auto;"
+                       onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22%3E%3Crect fill=%22%23f8f9fa%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2214%22 fill=%22%236c757d%22%3EQR Code%3C/text%3E%3Ctext x=%2250%25%22 y=%2260%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2212%22 fill=%22%236c757d%22%3EPlaceholder%3C/text%3E%3C/svg%3E';">
+                </div>
+              </div>
+
+              <div class="text-start">
+                <h3 class="h6 fw-semibold mb-2">Alternative Payment Methods</h3>
+                <p class="small text-muted mb-3">
+                  If you're unable to scan the QR code, you can also pay via:
+                </p>
+                <ul class="small text-muted ps-3 mb-0">
+                  <li class="mb-2">Direct bank transfer (details will be emailed to you)</li>
+                  <li class="mb-2">Revolut username: <strong>@davidnugent</strong> (placeholder)</li>
+                  <li>Contact chambers for other payment options</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next steps -->
+      <div class="card mt-4 border-info">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-3">
+            <i class="bi bi-list-check text-info me-2"></i>
+            What Happens Next?
+          </h2>
+          <ol class="small text-muted mb-0 ps-3" style="line-height: 1.8;">
+            <li class="mb-2">Complete payment using Revolut (via QR code or direct transfer)</li>
+            <li class="mb-2">You'll receive a confirmation email once payment is verified</li>
+            <li class="mb-2">Chambers will send consultation details and joining instructions</li>
+            <li>Attend your consultation at the scheduled time</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Contact info -->
+      <div class="card mt-4 border-0 bg-light">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-3">Questions or Need to Reschedule?</h2>
+          <p class="small text-muted mb-2">
+            <i class="bi bi-envelope me-2 text-primary"></i>
+            Email: <a href="mailto:david.nugent@lawlibrary.ie" class="text-decoration-none">david.nugent@lawlibrary.ie</a>
+          </p>
+          <p class="small text-muted mb-0">
+            <i class="bi bi-telephone me-2 text-primary"></i>
+            Phone: <a href="tel:012916043" class="text-decoration-none">01 291 6043</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="text-center mt-5">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+          <i class="bi bi-house"></i> Return to Homepage
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% endblock %}

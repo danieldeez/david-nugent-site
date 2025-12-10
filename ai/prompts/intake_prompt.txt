@@ -1,0 +1,3 @@
+TODO: System prompt for AI intake filter.
+Should classify raw enquiry and return JSON with:
+case_type, is_suitable, missing_info, questions_to_ask, next_step, flags.

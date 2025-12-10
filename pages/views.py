@@ -2,12 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
-from .forms import ContactForm, HomepageSettingsForm, AboutPageForm, SitePageForm, PracticeAreaForm, BlogPostForm, CaseStudyForm
+from .forms import ContactForm, HomepageSettingsForm, AboutPageForm, SitePageForm, PracticeAreaForm, BlogPostForm, CaseStudyForm, AvailabilitySlotForm, BookingSubmissionForm
 import hmac, hashlib, json
 import re, time, requests
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from .models import Booking, HomepageSettings, PracticeArea
-from .models import SitePage, PracticeArea, BlogPost, CaseStudy
+from .models import SitePage, PracticeArea, BlogPost, CaseStudy, AvailabilitySlot, BookingSubmission
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -31,7 +31,6 @@ def about(request):
         defaults={"title": "About", "body": ""}
     )
     return render(request, "SitePages/about.html", {"page": page})
-def book(request): return render(request, "SitePages/book.html")
 
 def privacy(request):
     page = SitePage.get_or_create_page(
@@ -540,3 +539,201 @@ def ai_assist(request):
     # Note: Frontend handles HTML sanitization, only allowing safe tags
     # (<a>, <p>, <ul>, <li>, <strong>, <em>) and only internal links (starting with /)
     return JsonResponse({"reply": reply})
+
+# Availability Slots (Custom Booking System)
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_availability_list(request):
+    slots = AvailabilitySlot.objects.all()
+    return render(request, "SitePages/owner_availability_list.html", {"slots": slots})
+
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_availability_create(request):
+    if request.method == "POST":
+        form = AvailabilitySlotForm(request.POST)
+        if form.is_valid():
+            slot = form.save()
+            messages.success(request, f"Availability slot created successfully for {slot.date} at {slot.start_time.strftime('%H:%M')}!")
+            return redirect("owner_availability_list")
+    else:
+        form = AvailabilitySlotForm()
+    return render(request, "SitePages/owner_availability_form.html", {
+        "form": form,
+        "is_create": True
+    })
+
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_availability_edit(request, pk):
+    slot = get_object_or_404(AvailabilitySlot, pk=pk)
+
+    if request.method == "POST":
+        form = AvailabilitySlotForm(request.POST, instance=slot)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Availability slot updated successfully!")
+            return redirect("owner_availability_list")
+    else:
+        form = AvailabilitySlotForm(instance=slot)
+
+    return render(request, "SitePages/owner_availability_form.html", {
+        "form": form,
+        "slot": slot,
+        "is_create": False
+    })
+
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_availability_delete(request, pk):
+    slot = get_object_or_404(AvailabilitySlot, pk=pk)
+
+    if request.method == "POST":
+        date_str = slot.date.strftime("%Y-%m-%d")
+        time_str = slot.start_time.strftime("%H:%M")
+        slot.delete()
+        messages.success(request, f"Availability slot for {date_str} at {time_str} deleted successfully.")
+        return redirect("owner_availability_list")
+
+    return render(request, "SitePages/owner_availability_confirm_delete.html", {"slot": slot})
+
+# Public Booking System Views
+def book_index(request):
+    """Shows list of available dates"""
+    from datetime import date
+    from collections import defaultdict
+
+    # Get all available slots in the future
+    today = date.today()
+    available_slots = AvailabilitySlot.objects.filter(
+        date__gte=today,
+        is_available=True
+    ).order_by('date', 'start_time')
+
+    # Group slots by date
+    dates_with_counts = defaultdict(int)
+    for slot in available_slots:
+        dates_with_counts[slot.date] += 1
+
+    # Convert to list of tuples (date, count)
+    dates_list = sorted(dates_with_counts.items())
+
+    return render(request, "SitePages/booking_index.html", {
+        "dates_list": dates_list,
+    })
+
+def book_date(request, date):
+    """Shows available slots for a specific date"""
+    from datetime import datetime
+
+    # Parse the date from URL parameter
+    try:
+        selected_date = datetime.strptime(date, "%Y-%m-%d").date()
+    except ValueError:
+        messages.error(request, "Invalid date format.")
+        return redirect("book_index")
+
+    # Get available slots for this date
+    slots = AvailabilitySlot.objects.filter(
+        date=selected_date,
+        is_available=True
+    ).order_by('start_time')
+
+    if not slots:
+        messages.warning(request, "No available slots for this date.")
+        return redirect("book_index")
+
+    return render(request, "SitePages/booking_date.html", {
+        "selected_date": selected_date,
+        "slots": slots,
+    })
+
+def book_slot(request, pk):
+    """Displays booking form for a specific slot"""
+    slot = get_object_or_404(AvailabilitySlot, pk=pk)
+
+    # Check if slot is still available
+    if not slot.is_available:
+        messages.error(request, "This slot is no longer available.")
+        return redirect("book_index")
+
+    # Check if slot is in the past
+    if slot.is_in_past():
+        messages.error(request, "This slot is in the past.")
+        return redirect("book_index")
+
+    form = BookingSubmissionForm()
+
+    return render(request, "SitePages/booking_slot.html", {
+        "slot": slot,
+        "form": form,
+    })
+
+def book_submit(request, pk):
+    """Handles booking form submission"""
+    slot = get_object_or_404(AvailabilitySlot, pk=pk)
+
+    # Check if slot is still available
+    if not slot.is_available:
+        messages.error(request, "This slot is no longer available.")
+        return redirect("book_index")
+
+    # Check if slot is in the past
+    if slot.is_in_past():
+        messages.error(request, "This slot is in the past.")
+        return redirect("book_index")
+
+    if request.method == "POST":
+        form = BookingSubmissionForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.slot = slot
+            booking.save()
+
+            # Mark slot as unavailable
+            slot.is_available = False
+            slot.save()
+
+            # Redirect to success page
+            return redirect("book_success", booking_id=booking.pk)
+        else:
+            # Return to form with errors
+            return render(request, "SitePages/booking_slot.html", {
+                "slot": slot,
+                "form": form,
+            })
+    else:
+        return redirect("book_slot", pk=pk)
+
+def book_success(request, booking_id):
+    """Shows booking success page with QR code"""
+    booking = get_object_or_404(BookingSubmission, pk=booking_id)
+
+    return render(request, "SitePages/booking_success.html", {
+        "booking": booking,
+    })
+
+# Owner Booking Management
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_booking_list(request):
+    """Shows list of all bookings"""
+    bookings = BookingSubmission.objects.all().select_related('slot')
+
+    return render(request, "SitePages/owner_booking_list.html", {
+        "bookings": bookings,
+    })
+
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_booking_toggle_paid(request, pk):
+    """Toggle the is_paid status of a booking"""
+    booking = get_object_or_404(BookingSubmission, pk=pk)
+
+    if request.method == "POST":
+        booking.is_paid = not booking.is_paid
+        booking.save()
+        status = "paid" if booking.is_paid else "unpaid"
+        messages.success(request, f"Booking marked as {status}.")
+
+    return redirect("owner_booking_list")

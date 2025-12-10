@@ -1,0 +1,6 @@
+TODO: Risk tagger.
+Should detect:
+- conflict_of_interest
+- out_of_practice_area
+- sensitive_personal_data
+- unsuitable_for_barrister

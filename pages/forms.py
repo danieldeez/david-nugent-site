@@ -1,5 +1,5 @@
 from django import forms
-from .models import Lead, HomepageSettings, SitePage, PracticeArea, BlogPost, CaseStudy
+from .models import Lead, HomepageSettings, SitePage, PracticeArea, BlogPost, CaseStudy, AvailabilitySlot, BookingSubmission
 
 class ContactForm(forms.ModelForm):
     consent = forms.BooleanField(
@@ -125,4 +125,68 @@ class CaseStudyForm(forms.ModelForm):
             "published": "Uncheck to save as draft (not visible to public).",
             "published_at": "Optional: Schedule when this case study should be published.",
             "hero_image": "Optional: Featured image for the case study.",
+        }
+
+class AvailabilitySlotForm(forms.ModelForm):
+    class Meta:
+        model = AvailabilitySlot
+        fields = ["date", "start_time", "end_time", "slot_type", "is_available", "notes"]
+        widgets = {
+            "date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "start_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
+            "end_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
+            "slot_type": forms.Select(attrs={"class": "form-select"}),
+            "is_available": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "notes": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Optional internal notes"}),
+        }
+        labels = {
+            "date": "Date",
+            "start_time": "Start Time",
+            "end_time": "End Time",
+            "slot_type": "Consultation Type",
+            "is_available": "Available for booking",
+            "notes": "Internal Notes",
+        }
+        help_texts = {
+            "date": "Select the date for this availability slot.",
+            "start_time": "Start time of the slot (e.g., 14:00).",
+            "end_time": "End time of the slot (e.g., 15:00). Must be after start time.",
+            "slot_type": "Type of consultation this slot is for.",
+            "is_available": "Uncheck to temporarily disable this slot without deleting it.",
+            "notes": "Private notes for your reference (not visible to clients).",
+        }
+
+    def clean(self):
+        """Validate that end_time is after start_time"""
+        cleaned_data = super().clean()
+        start_time = cleaned_data.get("start_time")
+        end_time = cleaned_data.get("end_time")
+
+        if start_time and end_time:
+            if end_time <= start_time:
+                raise forms.ValidationError("End time must be after start time.")
+
+        return cleaned_data
+
+class BookingSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = BookingSubmission
+        fields = ["name", "email", "phone", "description"]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Your full name"}),
+            "email": forms.EmailInput(attrs={"class": "form-control", "placeholder": "your.email@example.com"}),
+            "phone": forms.TextInput(attrs={"class": "form-control", "placeholder": "+353 (optional)"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 5, "placeholder": "Briefly describe your legal matter..."}),
+        }
+        labels = {
+            "name": "Full Name",
+            "email": "Email Address",
+            "phone": "Phone Number",
+            "description": "Brief Description of Your Matter",
+        }
+        help_texts = {
+            "name": "Your full name as it should appear on the booking.",
+            "email": "We'll send confirmation to this email address.",
+            "phone": "Optional. Provide if you'd like to be contacted by phone.",
+            "description": "Provide a brief overview of your legal matter (2-3 sentences).",
         }

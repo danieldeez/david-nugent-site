@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Select Time Slot | Book a Consultation{% endblock %}
+{% block content %}
+
+<main class="py-5 bg-body">
+  <section class="py-4">
+    <div class="container-xl">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'book_index' %}" class="text-decoration-none">Available Dates</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ selected_date|date:"F j, Y" }}</li>
+        </ol>
+      </nav>
+
+      <!-- Page header -->
+      <header class="mb-5">
+        <h1 class="h3 fw-semibold mb-2">Select a time slot</h1>
+        <p class="text-muted mb-0">
+          Available consultation slots for {{ selected_date|date:"l, F j, Y" }}
+        </p>
+      </header>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="row g-5">
+        <!-- Time slots column -->
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+              <h2 class="h5 fw-semibold mb-0">Available Time Slots</h2>
+            </div>
+            <div class="card-body p-0">
+              {% if slots %}
+                <div class="list-group list-group-flush">
+                  {% for slot in slots %}
+                    <a href="{% url 'book_slot' slot.pk %}"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 px-4">
+                      <div>
+                        <h3 class="h6 mb-1 fw-semibold">
+                          {{ slot.start_time|time:"g:i A" }} - {{ slot.end_time|time:"g:i A" }}
+                        </h3>
+                        <p class="mb-0 small text-muted">
+                          {{ slot.get_slot_type_display }} • {{ slot.duration_minutes }} minutes
+                        </p>
+                      </div>
+                      <i class="bi bi-chevron-right text-primary"></i>
+                    </a>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="text-center py-5">
+                  <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                  <p class="text-muted mt-3 mb-4">No slots available for this date.</p>
+                  <a href="{% url 'book_index' %}" class="btn btn-primary">
+                    <i class="bi bi-arrow-left"></i> Back to Available Dates
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <a href="{% url 'book_index' %}" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left"></i> Back to Available Dates
+            </a>
+          </div>
+        </div>
+
+        <!-- Information column -->
+        <div class="col-lg-4">
+          <aside>
+            <!-- Booking process -->
+            <div class="card border-primary mb-4">
+              <div class="card-body">
+                <h2 class="h6 fw-semibold mb-3">
+                  <i class="bi bi-info-circle text-primary me-2"></i>
+                  Next Steps
+                </h2>
+                <ol class="small text-muted mb-0 ps-3" style="line-height: 1.8;">
+                  <li class="mb-2">Select a time slot from the list</li>
+                  <li class="mb-2">Fill in your booking details</li>
+                  <li class="mb-2">Submit your booking</li>
+                  <li>Complete payment via Revolut to confirm</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- What to prepare -->
+            <div class="mb-4 pb-4 border-bottom">
+              <h2 class="h6 fw-semibold mb-3">What to prepare</h2>
+              <ul class="small text-muted mb-0 ps-3" style="line-height: 1.6;">
+                <li class="mb-2">A brief summary of your matter</li>
+                <li class="mb-2">Any relevant dates or deadlines</li>
+                <li class="mb-2">Key documents (if applicable)</li>
+                <li>Questions you'd like to address</li>
+              </ul>
+            </div>
+
+            <!-- Contact info -->
+            <div>
+              <h2 class="h6 fw-semibold mb-3">Need help?</h2>
+              <p class="small text-muted mb-2">
+                <i class="bi bi-envelope me-2 text-primary"></i>
+                <a href="mailto:david.nugent@lawlibrary.ie" class="text-decoration-none">david.nugent@lawlibrary.ie</a>
+              </p>
+              <p class="small text-muted mb-0">
+                <i class="bi bi-telephone me-2 text-primary"></i>
+                <a href="tel:012916043" class="text-decoration-none">01 291 6043</a>
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% endblock %}

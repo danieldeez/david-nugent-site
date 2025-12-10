@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Manage Bookings | Owner{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-1">Booking Submissions</h1>
+        <p class="text-ink-600 mb-0">View and manage all consultation bookings</p>
+      </div>
+      <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="card">
+      <div class="card-header bg-white">
+        <h5 class="mb-0">All Bookings</h5>
+      </div>
+      <div class="card-body p-0">
+        {% if bookings %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th class="px-4 py-3">Client</th>
+                  <th class="px-4 py-3">Date & Time</th>
+                  <th class="px-4 py-3">Type</th>
+                  <th class="px-4 py-3">Description</th>
+                  <th class="px-4 py-3">Payment</th>
+                  <th class="px-4 py-3">Booked</th>
+                  <th class="px-4 py-3 text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for booking in bookings %}
+                  <tr>
+                    <td class="px-4 py-3">
+                      <div>
+                        <strong>{{ booking.name }}</strong>
+                        <br>
+                        <small class="text-muted">{{ booking.email }}</small>
+                        {% if booking.phone %}
+                          <br>
+                          <small class="text-muted">{{ booking.phone }}</small>
+                        {% endif %}
+                      </div>
+                    </td>
+                    <td class="px-4 py-3">
+                      <strong>{{ booking.slot.date|date:"D, M j, Y" }}</strong>
+                      <br>
+                      <small class="text-muted">
+                        {{ booking.slot.start_time|time:"g:i A" }} - {{ booking.slot.end_time|time:"g:i A" }}
+                      </small>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span class="badge bg-light text-dark">{{ booking.slot.get_slot_type_display }}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                      <small class="text-muted">{{ booking.description|truncatewords:15 }}</small>
+                    </td>
+                    <td class="px-4 py-3">
+                      {% if booking.is_paid %}
+                        <span class="badge bg-success">Paid</span>
+                      {% else %}
+                        <span class="badge bg-warning text-dark">Unpaid</span>
+                      {% endif %}
+                    </td>
+                    <td class="px-4 py-3">
+                      <small class="text-muted">{{ booking.created_at|date:"M j, Y g:i A" }}</small>
+                    </td>
+                    <td class="px-4 py-3 text-end">
+                      <form method="post" action="{% url 'owner_booking_toggle_paid' booking.pk %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="btn btn-sm {% if booking.is_paid %}btn-outline-warning{% else %}btn-outline-success{% endif %}"
+                                title="{% if booking.is_paid %}Mark as unpaid{% else %}Mark as paid{% endif %}">
+                          <i class="bi {% if booking.is_paid %}bi-x-circle{% else %}bi-check-circle{% endif %}"></i>
+                          {% if booking.is_paid %}Unpaid{% else %}Paid{% endif %}
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-3 mb-0">No bookings yet.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card mt-4 border-info">
+      <div class="card-body">
+        <h6 class="card-title">
+          <i class="bi bi-lightbulb text-info"></i> Managing Bookings
+        </h6>
+        <ul class="mb-0 text-ink-600 small">
+          <li><strong>Payment Status:</strong> Click the payment toggle button to mark bookings as paid or unpaid.</li>
+          <li><strong>View Details:</strong> All booking details are visible in the table including client contact information.</li>
+          <li><strong>Availability:</strong> When a booking is submitted, the corresponding availability slot is automatically marked as unavailable.</li>
+          <li><strong>Sorting:</strong> Bookings are displayed with most recent first.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

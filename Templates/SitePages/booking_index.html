@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Book a Consultation | David Nugent BL{% endblock %}
+{% block content %}
+
+<main class="py-5 bg-body">
+  <section class="py-4">
+    <div class="container-xl">
+      <!-- Page header -->
+      <header class="mb-5">
+        <h1 class="h3 fw-semibold mb-2">Book a consultation</h1>
+        <p class="text-muted mb-0">
+          Select an available date to view time slots for your consultation.
+        </p>
+      </header>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="row g-5">
+        <!-- Available dates column -->
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+              <h2 class="h5 fw-semibold mb-0">Available Dates</h2>
+            </div>
+            <div class="card-body p-0">
+              {% if dates_list %}
+                <div class="list-group list-group-flush">
+                  {% for date, count in dates_list %}
+                    <a href="{% url 'book_date' date|date:'Y-m-d' %}"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 px-4">
+                      <div>
+                        <h3 class="h6 mb-1 fw-semibold">{{ date|date:"l, F j, Y" }}</h3>
+                        <p class="mb-0 small text-muted">
+                          {{ count }} slot{{ count|pluralize }} available
+                        </p>
+                      </div>
+                      <i class="bi bi-chevron-right text-primary"></i>
+                    </a>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="text-center py-5">
+                  <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                  <p class="text-muted mt-3 mb-4">No availability slots are currently available.</p>
+                  <p class="small text-muted">Please check back later or <a href="{% url 'contact' %}" class="text-decoration-none">contact chambers</a> directly.</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Information column -->
+        <div class="col-lg-4">
+          <aside>
+            <!-- Before you book -->
+            <div class="mb-4 pb-4 border-bottom">
+              <h2 class="h6 fw-semibold mb-3">Before you book</h2>
+              <p class="small text-muted mb-2" style="line-height: 1.6;">
+                Consultations are typically arranged for a fixed period and may be held remotely or in person, depending on the circumstances.
+              </p>
+              <p class="small text-muted mb-0" style="line-height: 1.6;">
+                If your matter is particularly urgent or complex, you may prefer to email chambers with a short outline first.
+              </p>
+            </div>
+
+            <!-- What to prepare -->
+            <div class="mb-4 pb-4 border-bottom">
+              <h2 class="h6 fw-semibold mb-3">What to prepare</h2>
+              <ul class="small text-muted mb-0 ps-3" style="line-height: 1.6;">
+                <li class="mb-2">A brief summary of your matter</li>
+                <li class="mb-2">Any relevant dates or deadlines</li>
+                <li class="mb-2">Key documents (if applicable)</li>
+                <li>Questions you'd like to address</li>
+              </ul>
+            </div>
+
+            <!-- Contact alternatives -->
+            <div class="mb-4 pb-4 border-bottom">
+              <h2 class="h6 fw-semibold mb-3">Contact alternatives</h2>
+              <p class="small text-muted mb-2">
+                <i class="bi bi-envelope me-2 text-primary"></i>
+                <a href="mailto:david.nugent@lawlibrary.ie" class="text-decoration-none">david.nugent@lawlibrary.ie</a>
+              </p>
+              <p class="small text-muted mb-0">
+                <i class="bi bi-telephone me-2 text-primary"></i>
+                <a href="tel:012916043" class="text-decoration-none">01 291 6043</a>
+              </p>
+            </div>
+
+            <!-- Important disclaimer -->
+            <div>
+              <h2 class="h6 fw-semibold mb-3">Important</h2>
+              <p class="small text-muted mb-0" style="line-height: 1.6;">
+                Booking a consultation does not in itself create a solicitor–client relationship. Any engagement depends on the scope of instructions agreed.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% endblock %}

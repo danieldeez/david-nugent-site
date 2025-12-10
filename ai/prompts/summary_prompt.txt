@@ -1,0 +1,8 @@
+TODO: Structured case summary generator.
+Output sections:
+- Parties
+- Issue
+- Timeline
+- Evidence
+- Missing documentation
+- Additional notes

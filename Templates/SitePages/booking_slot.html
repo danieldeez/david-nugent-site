@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Booking Form | Book a Consultation{% endblock %}
+{% block content %}
+
+<main class="py-5 bg-body">
+  <section class="py-4">
+    <div class="container-xl" style="max-width: 900px;">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'book_index' %}" class="text-decoration-none">Available Dates</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'book_date' slot.date|date:'Y-m-d' %}" class="text-decoration-none">{{ slot.date|date:"F j" }}</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Booking Form</li>
+        </ol>
+      </nav>
+
+      <!-- Page header -->
+      <header class="mb-5">
+        <h1 class="h3 fw-semibold mb-2">Complete your booking</h1>
+        <p class="text-muted mb-0">
+          Please provide your details to reserve this consultation slot.
+        </p>
+      </header>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Selected slot info -->
+      <div class="card border-primary mb-4">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="bg-primary bg-opacity-10 rounded p-3 me-3">
+              <i class="bi bi-calendar-check text-primary" style="font-size: 1.5rem;"></i>
+            </div>
+            <div>
+              <h2 class="h6 mb-1 fw-semibold">{{ slot.date|date:"l, F j, Y" }}</h2>
+              <p class="mb-0 text-muted">
+                {{ slot.start_time|time:"g:i A" }} - {{ slot.end_time|time:"g:i A" }}
+                <span class="mx-2">•</span>
+                {{ slot.get_slot_type_display }}
+                <span class="mx-2">•</span>
+                {{ slot.duration_minutes }} minutes
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking form -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom">
+          <h2 class="h5 fw-semibold mb-0">Your Details</h2>
+        </div>
+        <div class="card-body p-4">
+          <form method="post" action="{% url 'book_submit' slot.pk %}" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <div class="mb-4">
+              <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">
+                {{ form.name.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.name }}
+              {% if form.name.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.name.errors }}
+                </div>
+              {% endif %}
+              {% if form.name.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.name.help_text }}
+                </small>
+              {% endif %}
+            </div>
+
+            <div class="mb-4">
+              <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">
+                {{ form.email.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.email }}
+              {% if form.email.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.email.errors }}
+                </div>
+              {% endif %}
+              {% if form.email.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.email.help_text }}
+                </small>
+              {% endif %}
+            </div>
+
+            <div class="mb-4">
+              <label for="{{ form.phone.id_for_label }}" class="form-label fw-semibold">
+                {{ form.phone.label }}
+              </label>
+              {{ form.phone }}
+              {% if form.phone.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.phone.errors }}
+                </div>
+              {% endif %}
+              {% if form.phone.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.phone.help_text }}
+                </small>
+              {% endif %}
+            </div>
+
+            <div class="mb-4">
+              <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">
+                {{ form.description.label }}
+                <span class="text-danger">*</span>
+              </label>
+              {{ form.description }}
+              {% if form.description.errors %}
+                <div class="text-danger small mt-1">
+                  {{ form.description.errors }}
+                </div>
+              {% endif %}
+              {% if form.description.help_text %}
+                <small class="text-muted d-block mt-1">
+                  {{ form.description.help_text }}
+                </small>
+              {% endif %}
+            </div>
+
+            <div class="alert alert-warning border-warning">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>Important:</strong> After submitting, you'll receive payment instructions. The booking is not confirmed until payment is received.
+            </div>
+
+            <div class="d-flex gap-2 pt-3 border-top">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> Submit Booking
+              </button>
+              <a href="{% url 'book_date' slot.date|date:'Y-m-d' %}" class="btn btn-outline-secondary">
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="card mt-4 border-info">
+        <div class="card-body">
+          <h3 class="h6 fw-semibold mb-2">
+            <i class="bi bi-info-circle text-info me-2"></i>
+            Important Notice
+          </h3>
+          <p class="small text-muted mb-0">
+            Booking a consultation does not in itself create a solicitor–client relationship. Any engagement depends on the scope of instructions agreed. This website provides general information only and does not constitute legal advice.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% endblock %}

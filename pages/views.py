@@ -816,9 +816,10 @@ def book_submit(request, pk):
 def book_success(request, booking_id):
     """Shows booking success page with QR code"""
     booking = get_object_or_404(BookingSubmission, pk=booking_id)
-
+    qr_path = settings.BASE_DIR / "static" / "img" / "revolut-qr.png"
     return render(request, "SitePages/booking_success.html", {
         "booking": booking,
+        "has_revolut_qr": qr_path.exists(),
     })
 
 # Owner Booking Management
@@ -897,8 +898,9 @@ def calendar_feed(request, secret_key):
     # Query all bookings (we'll filter by datetime in Python for precision)
     # Get bookings from today onwards, then filter by exact datetime
     today = now.date()
-    bookings = BookingSubmission.objects.select_related('slot').filter(
-        slot__date__gte=today
+    bookings = BookingSubmission.objects.select_related('slot', 'intake').filter(
+        slot__date__gte=today,
+        is_paid=True,
     ).order_by('slot__date', 'slot__start_time')
 
     # Generate ICS content
@@ -955,9 +957,11 @@ def calendar_feed(request, secret_key):
         # Only include booking ID and a note to check CRM
         description_parts = []
         description_parts.append(f"Booking ID: {booking.id}")
+        if booking.intake:
+            description_parts.append(f"Intake Ref: {booking.intake.uuid}")
         description_parts.append("See CRM for details.")
 
-        description = ics_escape("\\n".join(description_parts))
+        description = ics_escape("\n".join(description_parts))
 
         # Generate unique ID for this event
         uid = f"booking-{booking.id}@{domain}"

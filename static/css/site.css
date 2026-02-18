@@ -17,52 +17,52 @@
    - Classic Navy: --brand-primary: #0a1628; --brand-accent: #C5A46E;
    ============================================================================ */
 :root{
-  /* Brand Colors - EDIT THESE TO RESKIN */
-  --brand-primary: #000000;           /* Primary brand color (slate blue) */
-  --brand-primary-light: #000000;     /* Lighter shade of primary */
-  --brand-primary-medium: #ffffff;    /* Medium shade for gradients */
-  --brand-accent: #ffffff;            /* Accent/highlight color (amber) */
-  --brand-accent-dark: #ffffff;       /* Darker accent for hover states */
+  /* Brand Colors - David Nugent Navy/Blue Theme */
+  --brand-primary: #0a1628;           /* Primary brand color (deep navy) */
+  --brand-primary-light: #0f1f35;     /* Lighter shade of navy */
+  --brand-primary-medium: #1a2f4a;    /* Medium navy for gradients */
+  --brand-accent: #2878e8;            /* Accent/highlight color (blue) */
+  --brand-accent-dark: #1a66d1;       /* Darker blue for hover states */
 
   /* CTA (Call-to-Action) Colors */
-  --cta-bg: #f59e0b;                  /* CTA button background */
-  --cta-bg-hover: #d97706;            /* CTA button hover state */
+  --cta-bg: #2878e8;                  /* CTA button background (blue) */
+  --cta-bg-hover: #1a66d1;            /* CTA button hover state (darker blue) */
   --cta-text: #ffffff;                /* CTA button text color */
 
   /* Background & Surface Colors */
-  --bg-page: #f8fafc;                 /* Main page background */
+  --bg-page: #fafbfd;                 /* Main page background */
   --bg-surface: #ffffff;              /* Card/surface background */
-  --bg-surface-alt: #f1f5f9;          /* Alternative surface (muted) */
-  --bg-muted: #e2e8f0;                /* Muted background for sections */
+  --bg-surface-alt: #f1f4f8;          /* Alternative surface (muted) */
+  --bg-muted: #e7ecf3;                /* Muted background for sections */
 
   /* Text Colors */
-  --text-primary: #0f172a;            /* Primary heading text */
-  --text-body: #334155;               /* Body text */
-  --text-muted: #64748b;              /* Muted/secondary text */
-  --text-light: #94a3b8;              /* Light text */
+  --text-primary: #2b3d56;            /* Primary heading text (ink-700) */
+  --text-body: #2b3d56;               /* Body text (ink-700) */
+  --text-muted: #4a5d7a;              /* Muted/secondary text (ink-600) */
+  --text-light: #6b7a93;              /* Light text (ink-500) */
   --text-on-dark: #f1f5f9;            /* Text on dark backgrounds */
   --text-on-dark-muted: rgba(241, 245, 249, 0.9);
 
   /* Border Colors */
-  --border-subtle: #e2e8f0;           /* Subtle borders */
-  --border-light: #f1f5f9;            /* Very light borders */
+  --border-subtle: #e7ecf3;           /* Subtle borders */
+  --border-light: #f1f4f8;            /* Very light borders */
   --border-on-dark: rgba(241, 245, 249, 0.1);
 
   /* Legacy aliases (for backward compatibility) */
-  --navy-900: var(--brand-primary);
+  --navy-900: #0a1628;
   --navy-800: #0f1f35;
-  --navy-700: var(--brand-primary-medium);
+  --navy-700: #1a2f4a;
   --navy-600: #264261;
-  --ink-700: var(--text-body);
-  --ink-600: var(--text-muted);
-  --ink-500: var(--text-light);
+  --ink-700: #2b3d56;
+  --ink-600: #4a5d7a;
+  --ink-500: #6b7a93;
   --ink-400: #8b98ae;
   --cta: #2878e8;
   --cta-hover: #1a66d1;
-  --bg: var(--bg-page);
-  --white: var(--bg-surface);
-  --border-light: var(--border-subtle);
-  --border-lighter: var(--border-light);
+  --bg: #fafbfd;
+  --white: #ffffff;
+  --border-light: #e7ecf3;
+  --border-lighter: #f1f4f8;
 }
 
 /* ===== Base ===== */

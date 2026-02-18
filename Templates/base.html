@@ -44,14 +44,14 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="nav">
-        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-4">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
           <li class="nav-item"><a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="/about/">About</a></li>
           <li class="nav-item"><a class="nav-link {% if request.path == '/practice-areas/' %}active{% endif %}" href="/practice-areas/">Practice Areas</a></li>
           <li class="nav-item"><a class="nav-link {% if '/blog/' in request.path %}active{% endif %}" href="/blog/">Insights</a></li>
           <li class="nav-item"><a class="nav-link {% if '/cases/' in request.path %}active{% endif %}" href="/cases/">Case Studies</a></li>
-          <li class="nav-item ms-lg-3 mt-3 mt-lg-0 d-flex flex-wrap gap-2">
+          <li class="nav-item mt-3 mt-lg-0 d-flex flex-wrap gap-2">
             <a class="btn btn-outline-light btn-sm" href="/contact/">Submit an Enquiry</a>
-            <a class="btn btn-outline-light premium-cta" href="/book/">Book Consultation</a>
+            <a class="btn btn-outline-light btn-sm premium-cta" href="/book/">Book Consultation</a>
           </li>
           {% if user.is_authenticated and user.is_staff %}
           <li class="nav-item ms-lg-1">

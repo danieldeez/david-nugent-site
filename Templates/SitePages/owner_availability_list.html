@@ -42,7 +42,6 @@
                   <th class="px-4 py-3">Date</th>
                   <th class="px-4 py-3">Time</th>
                   <th class="px-4 py-3">Duration</th>
-                  <th class="px-4 py-3">Type</th>
                   <th class="px-4 py-3">Status</th>
                   <th class="px-4 py-3 text-end">Actions</th>
                 </tr>
@@ -61,9 +60,6 @@
                     </td>
                     <td class="px-4 py-3">
                       <span class="badge bg-light text-dark">{{ slot.duration_minutes }} min</span>
-                    </td>
-                    <td class="px-4 py-3">
-                      {{ slot.get_slot_type_display }}
                     </td>
                     <td class="px-4 py-3">
                       {% if slot.is_available %}
@@ -106,7 +102,6 @@
         </h6>
         <ul class="mb-0 text-ink-600 small">
           <li><strong>Date & Time:</strong> Create slots for when you're available for consultations. Each slot represents one bookable time window.</li>
-          <li><strong>Slot Type:</strong> Specify whether the slot is for initial consultations, follow-ups, or general meetings.</li>
           <li><strong>Availability:</strong> Uncheck "Available for booking" to temporarily disable a slot without deleting it.</li>
           <li><strong>Notes:</strong> Add private notes for your reference (clients won't see these).</li>
         </ul>

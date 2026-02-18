@@ -743,8 +743,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* ===== About Page ===== */
 .about-hero {
-  background: linear-gradient(to bottom, var(--brand-primary), var(--brand-primary-light));
-  color: var(--text-on-dark);
+  background: var(--bg-surface-alt);
 }
 
 .about-aside {

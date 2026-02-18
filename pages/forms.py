@@ -166,12 +166,11 @@ class CaseStudyForm(forms.ModelForm):
 class AvailabilitySlotForm(forms.ModelForm):
     class Meta:
         model = AvailabilitySlot
-        fields = ["date", "start_time", "end_time", "slot_type", "is_available", "notes"]
+        fields = ["date", "start_time", "end_time", "is_available", "notes"]
         widgets = {
             "date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
             "start_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
             "end_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
-            "slot_type": forms.Select(attrs={"class": "form-select"}),
             "is_available": forms.CheckboxInput(attrs={"class": "form-check-input"}),
             "notes": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Optional internal notes"}),
         }
@@ -179,7 +178,6 @@ class AvailabilitySlotForm(forms.ModelForm):
             "date": "Date",
             "start_time": "Start Time",
             "end_time": "End Time",
-            "slot_type": "Consultation Type",
             "is_available": "Available for booking",
             "notes": "Internal Notes",
         }
@@ -187,7 +185,6 @@ class AvailabilitySlotForm(forms.ModelForm):
             "date": "Select the date for this availability slot.",
             "start_time": "Start time of the slot (e.g., 14:00).",
             "end_time": "End time of the slot (e.g., 15:00). Must be after start time.",
-            "slot_type": "Type of consultation this slot is for.",
             "is_available": "Uncheck to temporarily disable this slot without deleting it.",
             "notes": "Private notes for your reference (not visible to clients).",
         }

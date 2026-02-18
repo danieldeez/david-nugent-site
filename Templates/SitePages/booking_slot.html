@@ -43,8 +43,6 @@
               <p class="mb-0 text-muted">
                 {{ slot.start_time|time:"g:i A" }} - {{ slot.end_time|time:"g:i A" }}
                 <span class="mx-2">•</span>
-                {{ slot.get_slot_type_display }}
-                <span class="mx-2">•</span>
                 {{ slot.duration_minutes }} minutes
               </p>
             </div>

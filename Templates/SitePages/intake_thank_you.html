@@ -58,8 +58,8 @@
                 <a href="{% url 'book_index' %}?intake={{ intake_session.uuid }}" class="btn btn-primary">
                   <i class="bi bi-calendar-check me-2"></i>Book a Consultation
                 </a>
-                <a href="{% url 'contact' %}" class="btn btn-outline-secondary">
-                  <i class="bi bi-envelope me-2"></i>Contact Chambers
+                <a href="mailto:{{ BARRISTER_EMAIL }}" class="btn btn-outline-secondary">
+                  <i class="bi bi-envelope me-2"></i>Email Chambers
                 </a>
               </div>
 
@@ -71,11 +71,14 @@
                 Based on the information provided, this matter may not be suitable for our chambers. However, we will review your enquiry and respond if we can assist.
               </p>
               <p class="mb-0">
-                If you have questions or wish to discuss your matter, please contact chambers directly using the details below.
+                If you have questions or wish to discuss your matter, please contact chambers directly.
               </p>
               <div class="d-grid gap-2 d-sm-flex mt-3">
-                <a href="{% url 'contact' %}" class="btn btn-primary">
-                  <i class="bi bi-envelope me-2"></i>Contact Chambers
+                <a href="mailto:{{ BARRISTER_EMAIL }}" class="btn btn-primary">
+                  <i class="bi bi-envelope me-2"></i>Email Chambers
+                </a>
+                <a href="tel:{{ BARRISTER_PHONE|cut:' ' }}" class="btn btn-outline-secondary">
+                  <i class="bi bi-telephone me-2"></i>{{ BARRISTER_PHONE }}
                 </a>
               </div>
 
@@ -90,8 +93,11 @@
                 If your matter is time-sensitive or urgent, please contact chambers directly.
               </p>
               <div class="d-grid gap-2 d-sm-flex mt-3">
-                <a href="{% url 'contact' %}" class="btn btn-primary">
-                  <i class="bi bi-envelope me-2"></i>Contact Chambers
+                <a href="mailto:{{ BARRISTER_EMAIL }}" class="btn btn-primary">
+                  <i class="bi bi-envelope me-2"></i>Email Chambers
+                </a>
+                <a href="tel:{{ BARRISTER_PHONE|cut:' ' }}" class="btn btn-outline-secondary">
+                  <i class="bi bi-telephone me-2"></i>{{ BARRISTER_PHONE }}
                 </a>
               </div>
 

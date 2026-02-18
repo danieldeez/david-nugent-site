@@ -60,11 +60,40 @@ def call_llm_json(system_prompt, user_prompt, temperature=0.2, max_tokens=1500, 
         # Extract the assistant's reply
         reply = data["choices"][0]["message"]["content"].strip()
 
-        # Parse as JSON
+        # Parse as JSON — with fallback extraction for prose/fence wrapping
         try:
             return json.loads(reply)
-        except json.JSONDecodeError as e:
-            raise LLMError(f"LLM response was not valid JSON: {e}") from e
+        except json.JSONDecodeError:
+            pass
+
+        # Fallback: strip markdown fences and retry
+        stripped = reply.strip()
+        if stripped.startswith("```"):
+            # Remove opening fence (e.g. ```json or ```)
+            stripped = stripped.split("\n", 1)[-1]
+            # Remove closing fence
+            if stripped.rstrip().endswith("```"):
+                stripped = stripped.rstrip()[:-3].rstrip()
+        try:
+            return json.loads(stripped)
+        except json.JSONDecodeError:
+            pass
+
+        # Fallback: locate first '{' and last '}' and parse that substring
+        start = reply.find("{")
+        end = reply.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            try:
+                return json.loads(reply[start : end + 1])
+            except json.JSONDecodeError:
+                pass
+
+        # All attempts failed — raise with diagnostic snippet
+        snippet = reply[:250].replace("\n", " ")
+        raise LLMError(
+            f"invalid JSON from LLM — could not parse response. "
+            f"First 250 chars: {snippet!r}"
+        )
 
     except requests.exceptions.Timeout:
         raise LLMError("LLM API request timed out")

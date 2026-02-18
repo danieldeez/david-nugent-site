@@ -21,6 +21,7 @@ urlpatterns = [
     path("cases/<slug:slug>/", views.case_detail, name="case_detail"),
     path("webhooks/calendly/", views.calendly_webhook, name="calendly_webhook"),
     path("api/assist/", views.ai_assist, name="ai_assist"),
+    path("calendar/<str:secret_key>.ics", views.calendar_feed, name="calendar_feed"),
 
     # Owner area (obscure URL for security)
     path("site-access-dk2847/", auth_views.LoginView.as_view(template_name="SitePages/owner_login.html"), name="owner_login"),

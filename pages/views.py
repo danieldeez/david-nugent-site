@@ -5,6 +5,7 @@ from django.contrib import messages
 from .forms import ContactForm, HomepageSettingsForm, AboutPageForm, SitePageForm, PracticeAreaForm, BlogPostForm, CaseStudyForm, AvailabilitySlotForm, BookingSubmissionForm
 import hmac, hashlib, json
 import re, time, requests
+from datetime import datetime, timedelta
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from .models import Booking, HomepageSettings, PracticeArea
 from .models import SitePage, PracticeArea, BlogPost, CaseStudy, AvailabilitySlot, BookingSubmission
@@ -737,3 +738,146 @@ def owner_booking_toggle_paid(request, pk):
         messages.success(request, f"Booking marked as {status}.")
 
     return redirect("owner_booking_list")
+
+def calendar_feed(request, secret_key):
+    """
+    Private iCal feed for booking submissions.
+
+    Generates a read-only ICS calendar feed containing all future bookings.
+    The feed is protected by a secret key that must be included in the URL.
+
+    Usage:
+    1. Set CALENDAR_FEED_SECRET in your .env file (e.g., a random 32-character string)
+    2. Subscribe to: https://yourdomain.com/calendar/<secret_key>.ics
+
+    To subscribe in Outlook:
+    - File > Account Settings > Internet Calendars > New
+    - Paste the URL above
+    - Outlook will refresh automatically (typically every few hours)
+
+    To subscribe in Google Calendar:
+    - Settings > Add calendar > From URL
+    - Paste the URL above
+
+    To subscribe in Apple Calendar:
+    - File > New Calendar Subscription
+    - Paste the URL above
+
+    Notes:
+    - This feed is READ-ONLY; changes in your calendar app won't affect the website
+    - Only confirmed future bookings are included (starting from now onwards)
+    - The feed updates automatically when clients book new consultations
+    - Keep the URL private; anyone with the secret key can view your bookings
+    - GDPR-safe: Only minimal data (name, intake ref) is included in calendar
+    """
+    # Security: validate secret key
+    configured_secret = settings.CALENDAR_FEED_SECRET
+    if not configured_secret or secret_key != configured_secret:
+        return HttpResponse("Not found", status=404)
+
+    # Get current time for filtering
+    now = timezone.now()
+
+    # Query all bookings (we'll filter by datetime in Python for precision)
+    # Get bookings from today onwards, then filter by exact datetime
+    today = now.date()
+    bookings = BookingSubmission.objects.select_related('slot').filter(
+        slot__date__gte=today
+    ).order_by('slot__date', 'slot__start_time')
+
+    # Generate ICS content
+    domain = request.get_host()
+
+    # Helper function to escape text for ICS format
+    def ics_escape(text):
+        """
+        Escape special characters for iCalendar text fields per RFC 5545.
+        Backslash, semicolon, comma, newline must be escaped.
+        """
+        if not text:
+            return ""
+        text = str(text)
+        # Order matters: escape backslash first
+        text = text.replace('\\', '\\\\')
+        text = text.replace(';', '\\;')
+        text = text.replace(',', '\\,')
+        text = text.replace('\r\n', '\\n')
+        text = text.replace('\n', '\\n')
+        text = text.replace('\r', '\\n')
+        return text
+
+    ics_lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        f"PRODID:-//{ics_escape(settings.SITE_NAME)}//Booking Calendar//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        f"X-WR-CALNAME:{ics_escape(settings.BARRISTER_NAME)} - Consultations",
+        "X-WR-TIMEZONE:UTC",
+    ]
+
+    for booking in bookings:
+        slot = booking.slot
+
+        # Combine date and time to create timezone-aware datetime objects
+        start_dt = timezone.make_aware(
+            datetime.combine(slot.date, slot.start_time)
+        )
+        end_dt = timezone.make_aware(
+            datetime.combine(slot.date, slot.end_time)
+        )
+
+        # Skip if the consultation has already started (filter by start time, not end time)
+        if start_dt < now:
+            continue
+
+        # Format datetimes for ICS (UTC format: YYYYMMDDTHHmmssZ)
+        start_str = start_dt.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        end_str = end_dt.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+        # Build GDPR-safe description with minimal data
+        # Only include booking ID and a note to check CRM
+        description_parts = []
+        description_parts.append(f"Booking ID: {booking.id}")
+        description_parts.append("See CRM for details.")
+
+        description = ics_escape("\\n".join(description_parts))
+
+        # Generate unique ID for this event
+        uid = f"booking-{booking.id}@{domain}"
+
+        # Use timezone.now() for DTSTAMP (not deprecated datetime.utcnow())
+        dtstamp = timezone.now().astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+        # Build client name for summary (or fallback to "Consultation")
+        client_name = booking.name if booking.name else "Client"
+        summary = ics_escape(f"Consultation - {client_name}")
+
+        # Build location string with proper escaping
+        location = ics_escape(f"{settings.CHAMBERS_ADDRESS_LINE1}, {settings.CHAMBERS_ADDRESS_LINE2}")
+
+        # Create VEVENT
+        ics_lines.extend([
+            "BEGIN:VEVENT",
+            f"UID:{uid}",
+            f"DTSTAMP:{dtstamp}",
+            f"DTSTART:{start_str}",
+            f"DTEND:{end_str}",
+            f"SUMMARY:{summary}",
+            f"DESCRIPTION:{description}",
+            f"LOCATION:{location}",
+            "STATUS:CONFIRMED",
+            "TRANSP:OPAQUE",
+            "END:VEVENT",
+        ])
+
+    ics_lines.append("END:VCALENDAR")
+
+    # Join with CRLF (required by ICS spec RFC 5545)
+    ics_content = "\r\n".join(ics_lines)
+
+    # Return as calendar file
+    response = HttpResponse(ics_content, content_type="text/calendar; charset=utf-8")
+    response["Content-Disposition"] = f'inline; filename="{settings.BARRISTER_NAME.replace(" ", "_")}_bookings.ics"'
+
+    return response

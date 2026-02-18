@@ -18,7 +18,14 @@ load_dotenv()  # take environment variables from .env.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings - MUST be set via environment variables
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-pg^h_n*gd#99gw1$82_^+4u=4#w2-o@#=yx_ydrq#=60h%#488")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    if os.getenv("DEBUG") == "True":
+        # Development fallback - unsafe for production
+        SECRET_KEY = "django-insecure-pg^h_n*gd#99gw1$82_^+4u=4#w2-o@#=yx_ydrq#=60h%#488"
+    else:
+        raise ValueError("SECRET_KEY environment variable must be set in production")
+
 DEBUG = os.getenv("DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
 
@@ -28,6 +35,18 @@ LLM_BASE_URL = os.getenv("LLM_BASE_URL", "")
 LLM_API_KEY  = os.getenv("LLM_API_KEY", "")
 LLM_MODEL    = os.getenv("LLM_MODEL", "deepseek-chat")
 ASSISTANT_ENABLED = os.getenv("ASSISTANT_ENABLED", "0") == "1"
+
+# Calendar Feed (private iCal subscription)
+CALENDAR_FEED_SECRET = os.getenv("CALENDAR_FEED_SECRET", "")
+
+# Barrister/Site Configuration
+# These are used in templates and calendar feed
+SITE_NAME = os.getenv("SITE_NAME", "David Nugent BL")
+BARRISTER_NAME = os.getenv("BARRISTER_NAME", "David Nugent")
+BARRISTER_EMAIL = os.getenv("BARRISTER_EMAIL", "info@davidnugent.ie")
+BARRISTER_PHONE = os.getenv("BARRISTER_PHONE", "01 XXX XXXX")
+CHAMBERS_ADDRESS_LINE1 = os.getenv("CHAMBERS_ADDRESS_LINE1", "Your Chambers")
+CHAMBERS_ADDRESS_LINE2 = os.getenv("CHAMBERS_ADDRESS_LINE2", "Dublin, Ireland")
 
 CACHES = {
     "default": {

@@ -4,7 +4,8 @@ from .models import Lead, HomepageSettings, SitePage, PracticeArea, BlogPost, Ca
 class ContactForm(forms.ModelForm):
     consent = forms.BooleanField(
         required=True,
-        label="I agree to the Privacy Policy and understand this is not legal advice."
+        label='I consent to my data being processed as described in the <a href="/privacy/" target="_blank">Privacy Policy</a>',
+        help_text="We collect and process your information solely for the purpose of responding to your enquiry."
     )
 
     class Meta:
@@ -169,6 +170,12 @@ class AvailabilitySlotForm(forms.ModelForm):
         return cleaned_data
 
 class BookingSubmissionForm(forms.ModelForm):
+    consent = forms.BooleanField(
+        required=True,
+        label='I consent to my data being processed as described in the <a href="/privacy/" target="_blank">Privacy Policy</a>',
+        help_text="We collect and process your information solely for the purpose of managing your consultation booking."
+    )
+
     class Meta:
         model = BookingSubmission
         fields = ["name", "email", "phone", "description"]

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{{ page.title|default:"About" }} | Barrister{% endblock %}
+{% block title %}{{ page.title|default:"About" }} | {{ SITE_NAME }}{% endblock %}
 {% block content %}
 
 <!-- About hero with portrait and intro -->
@@ -22,12 +22,12 @@
             {% endif %}
           </div>
           <div class="card-body">
-            <h1 class="h4 mb-1 about-name">David&nbsp;Nugent&nbsp;BL</h1>
-            <p class="small about-subtitle mb-3">Junior Counsel: 2021</p>
+            <h1 class="h4 mb-1 about-name">{{ SITE_NAME }}</h1>
+            <p class="small about-subtitle mb-3">Junior Counsel: {{ YEAR_CALLED }}</p>
             <ul class="list-unstyled small about-facts mb-0">
-              <li class="mb-2"><i class="bi bi-award me-2 text-primary"></i>LLB (Hons) Irish Law</li>
+              <li class="mb-2"><i class="bi bi-award me-2 text-primary"></i>{{ QUALIFICATIONS }}</li>
               <li class="mb-2"><i class="bi bi-briefcase me-2 text-primary"></i>Barrister at Law</li>
-              <li class="mb-2"><i class="bi bi-geo-alt me-2 text-primary"></i>Dublin, Eastern &amp; Midland Circuits</li>
+              <li class="mb-2"><i class="bi bi-geo-alt me-2 text-primary"></i>{{ CIRCUITS }}</li>
               <li><i class="bi bi-check-circle me-2 text-primary"></i>Direct professional access provided</li>
             </ul>
           </div>
@@ -103,13 +103,13 @@
       <div class="col-lg-8">
         <h3 class="h5 fw-semibold mb-1">Enquiries and instructions</h3>
         <p class="text-muted mb-0">
-          For enquiries or to discuss a potential instruction, you can contact chambers or book a consultation.
+          Ready to book a consultation? Or submit an initial enquiry to discuss your matter first.
         </p>
       </div>
       <div class="col-lg-4 text-lg-end">
         <div class="d-flex flex-column flex-sm-row justify-content-lg-end gap-2">
-          <a href="/book/" class="btn btn-primary">Book consultation</a>
-          <a href="/contact/" class="btn btn-outline-secondary">Contact chambers</a>
+          <a href="/contact/" class="btn btn-primary">Submit enquiry</a>
+          <a href="/book/" class="btn btn-outline-secondary">Book consultation</a>
         </div>
       </div>
     </div>

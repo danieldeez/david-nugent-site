@@ -1,25 +1,68 @@
 /* ===== Google Fonts ===== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap');
 
-/* ===== Theme tokens ===== */
+/* ============================================================================
+   THEME TOKENS (edit these to reskin the template)
+   ============================================================================
+
+   To customize the site's brand colors:
+   1. Edit --brand-primary: Main brand color (navbar, headings, accents)
+   2. Edit --brand-accent: Call-to-action color (buttons, highlights)
+   3. Edit --brand-accent-dark: Hover state for CTAs
+   4. Optional: Adjust background and surface colors for different feels
+
+   Example color schemes:
+   - Corporate Blue: --brand-primary: #1e3a8a; --brand-accent: #3b82f6;
+   - Professional Green: --brand-primary: #065f46; --brand-accent: #10b981;
+   - Classic Navy: --brand-primary: #0a1628; --brand-accent: #C5A46E;
+   ============================================================================ */
 :root{
-  --navy-900:#0a1628;
-  --navy-800:#0f1f35;
-  --navy-700:#1a2f4a;
-  --navy-600:#264261;
-  --ink-700:#2b3d56;
-  --ink-600:#4a5d7a;
-  --ink-500:#6b7a93;
-  --ink-400:#8b98ae;
+  /* Brand Colors - EDIT THESE TO RESKIN */
+  --brand-primary: #000000;           /* Primary brand color (slate blue) */
+  --brand-primary-light: #000000;     /* Lighter shade of primary */
+  --brand-primary-medium: #ffffff;    /* Medium shade for gradients */
+  --brand-accent: #ffffff;            /* Accent/highlight color (amber) */
+  --brand-accent-dark: #ffffff;       /* Darker accent for hover states */
 
-  /* Accent */
-  --cta:#2878e8;
-  --cta-hover:#1a66d1;
+  /* CTA (Call-to-Action) Colors */
+  --cta-bg: #f59e0b;                  /* CTA button background */
+  --cta-bg-hover: #d97706;            /* CTA button hover state */
+  --cta-text: #ffffff;                /* CTA button text color */
 
-  --bg:#fafbfd;
-  --white:#ffffff;
-  --border-light:#e7ecf3;
-  --border-lighter:#f1f4f8;
+  /* Background & Surface Colors */
+  --bg-page: #f8fafc;                 /* Main page background */
+  --bg-surface: #ffffff;              /* Card/surface background */
+  --bg-surface-alt: #f1f5f9;          /* Alternative surface (muted) */
+  --bg-muted: #e2e8f0;                /* Muted background for sections */
+
+  /* Text Colors */
+  --text-primary: #0f172a;            /* Primary heading text */
+  --text-body: #334155;               /* Body text */
+  --text-muted: #64748b;              /* Muted/secondary text */
+  --text-light: #94a3b8;              /* Light text */
+  --text-on-dark: #f1f5f9;            /* Text on dark backgrounds */
+  --text-on-dark-muted: rgba(241, 245, 249, 0.9);
+
+  /* Border Colors */
+  --border-subtle: #e2e8f0;           /* Subtle borders */
+  --border-light: #f1f5f9;            /* Very light borders */
+  --border-on-dark: rgba(241, 245, 249, 0.1);
+
+  /* Legacy aliases (for backward compatibility) */
+  --navy-900: var(--brand-primary);
+  --navy-800: #0f1f35;
+  --navy-700: var(--brand-primary-medium);
+  --navy-600: #264261;
+  --ink-700: var(--text-body);
+  --ink-600: var(--text-muted);
+  --ink-500: var(--text-light);
+  --ink-400: #8b98ae;
+  --cta: #2878e8;
+  --cta-hover: #1a66d1;
+  --bg: var(--bg-page);
+  --white: var(--bg-surface);
+  --border-light: var(--border-subtle);
+  --border-lighter: var(--border-light);
 }
 
 /* ===== Base ===== */
@@ -91,10 +134,10 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* ===== Topbar & Navbar ===== */
 .topbar-refined {
-  background: #0A1A2F;
+  background: var(--brand-primary);
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.8125rem;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--border-on-dark) !important;
 }
 
 .topbar-refined span {
@@ -104,8 +147,8 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* Premium Navbar */
 .premium-navbar {
-  background: linear-gradient(to bottom, #0A1A2F, #13233A);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(to bottom, var(--brand-primary), var(--brand-primary-light));
+  border-bottom: 1px solid var(--border-on-dark);
 }
 
 .premium-brand {
@@ -138,8 +181,8 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .premium-navbar .nav-link.active {
-  color: #C5A46E !important;
-  border-bottom-color: #C5A46E;
+  color: var(--brand-accent) !important;
+  border-bottom-color: var(--brand-accent);
   font-weight: 600;
 }
 
@@ -173,7 +216,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
   }
   .premium-navbar .nav-link.active {
     border-bottom: none;
-    border-left: 3px solid #C5A46E;
+    border-left: 3px solid var(--brand-accent);
     padding-left: 0.75rem;
   }
 }
@@ -219,8 +262,8 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* ===== Home Hero ===== */
 .home-hero {
-  background: linear-gradient(to bottom, #0A1A2F, #13233A);
-  color: #E5E7EB;
+  background: linear-gradient(to bottom, var(--brand-primary), var(--brand-primary-light));
+  color: var(--text-on-dark);
   padding-top: 4.5rem !important;
   padding-bottom: 5.5rem !important;
 }
@@ -236,17 +279,17 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .home-hero-cta-primary {
-  background-color: #C5A46E;
-  border-color: #C5A46E;
-  color: #FFFFFF;
+  background-color: var(--cta-bg);
+  border-color: var(--cta-bg);
+  color: var(--cta-text);
   font-weight: 500;
   transition: all 0.15s ease;
 }
 
 .home-hero-cta-primary:hover {
-  background-color: #B39560;
-  border-color: #B39560;
-  color: #FFFFFF;
+  background-color: var(--cta-bg-hover);
+  border-color: var(--cta-bg-hover);
+  color: var(--cta-text);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(197, 164, 110, 0.3);
 }
@@ -276,10 +319,38 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Profile Placeholder - Reusable neutral placeholder for headshots */
+.profile-placeholder {
+  background: linear-gradient(135deg, var(--bg-surface-alt) 0%, var(--bg-muted) 100%);
+  border: 2px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 3.5rem;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.profile-placeholder::before {
+  content: "\f4da"; /* Bootstrap icon: person-circle */
+  font-family: 'bootstrap-icons';
+  opacity: 0.25;
+}
+
+.profile-placeholder-circle {
+  border-radius: 50%;
+}
+
+.profile-placeholder-rounded {
+  border-radius: 0.875rem;
+}
+
 .home-hero-photo-frame {
   border-radius: 14px 14px 0 0;
   overflow: hidden;
-  background: #F5F6F7;
+  background: var(--bg-surface-alt);
   max-height: 320px;
 }
 
@@ -398,7 +469,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 .case-card {
   background: #ffffff;
   border-radius: 12px;
-  border-top: 3px solid #C5A46E;
+  border-top: 3px solid var(--brand-accent);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   position: relative;
@@ -407,7 +478,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 .case-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  border-top-color: #B39560;
+  border-top-color: var(--brand-accent-dark);
 }
 
 .case-card .card-body {
@@ -417,10 +488,10 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 .case-badge {
   display: inline-block;
   padding: 0.35rem 0.75rem;
-  border: 1px solid rgba(197, 164, 110, 0.4);
+  border: 1px solid rgba(245, 158, 11, 0.4);
   border-radius: 4px;
-  color: #8B7355;
-  background: rgba(197, 164, 110, 0.08);
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.1);
   font-weight: 500;
   letter-spacing: 0.05em;
   font-size: 0.75rem;
@@ -653,9 +724,9 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* Practice badge for home page */
 .practice-badge {
-  background: rgba(197, 164, 110, 0.1);
-  color: #C5A46E;
-  border: 1px solid rgba(197, 164, 110, 0.2);
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--brand-accent);
+  border: 1px solid rgba(245, 158, 11, 0.25);
   padding: 0.25rem 0.625rem;
   border-radius: 0.375rem;
   font-size: 0.6875rem;
@@ -672,12 +743,12 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* ===== About Page ===== */
 .about-hero {
-  background: linear-gradient(to bottom, #0A1A2F, #13233A);
-  color: #E5E7EB;
+  background: linear-gradient(to bottom, var(--brand-primary), var(--brand-primary-light));
+  color: var(--text-on-dark);
 }
 
 .about-aside {
-  background: #FFFFFF;
+  background: var(--bg-surface);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -686,8 +757,8 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
   position: relative;
   max-height: 400px;
   overflow: hidden;
-  background: #F5F6F7;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--bg-surface-alt);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .about-portrait {
@@ -707,23 +778,23 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 .about-heading {
   letter-spacing: 0.03em;
   font-family: 'IBM Plex Serif', Georgia, serif;
-  color: #C5A46E;
+  color: var(--brand-accent);
   font-weight: 600;
 }
 
-/* About page section headings with gold accent */
+/* About page section headings with accent color */
 .about-hero ~ section h3,
 .about-hero ~ section h2 {
-  color: #C5A46E;
+  color: var(--brand-accent);
   font-family: 'Playfair Display', 'IBM Plex Serif', Georgia, serif;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
-/* Ensure CMS content headings also use gold */
+/* Ensure CMS content headings also use accent color */
 .about-intro h2,
 .about-intro h3 {
-  color: #C5A46E;
+  color: var(--brand-accent);
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -803,7 +874,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 .practice-area-content h2 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #C5A46E;
+  color: var(--brand-accent);
   margin-top: 2rem;
   margin-bottom: 1rem;
   font-family: 'Playfair Display', Georgia, serif;
@@ -812,7 +883,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 .practice-area-content h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #C5A46E;
+  color: var(--brand-accent);
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
   font-family: 'Playfair Display', Georgia, serif;
@@ -839,12 +910,12 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .practice-area-content a {
-  color: #C5A46E;
+  color: var(--brand-accent);
   text-decoration: underline;
 }
 
 .practice-area-content a:hover {
-  color: #B39560;
+  color: var(--brand-accent-dark);
 }
 
 /* ===== Contact Page ===== */
@@ -869,8 +940,8 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .contact-card .form-control:focus {
-  border-color: #C5A46E;
-  box-shadow: 0 0 0 0.2rem rgba(197, 164, 110, 0.15);
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.15);
 }
 
 .contact-card textarea.form-control {
@@ -889,12 +960,12 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
   margin-top: 0.15rem;
   width: 1.1rem;
   height: 1.1rem;
-  border-color: #C5A46E;
+  border-color: var(--brand-accent);
 }
 
 .contact-consent .form-check-input:checked {
-  background-color: #C5A46E;
-  border-color: #C5A46E;
+  background-color: var(--brand-accent);
+  border-color: var(--brand-accent);
 }
 
 .contact-consent .form-check-label {
@@ -923,7 +994,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .contact-aside a:hover {
-  color: #C5A46E;
+  color: var(--brand-accent);
 }
 
 /* Responsive adjustments for Contact page */
@@ -971,7 +1042,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .booking-aside a:hover {
-  color: #C5A46E;
+  color: var(--brand-accent);
 }
 
 .booking-aside ul li {
@@ -1039,7 +1110,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .breadcrumb-premium .breadcrumb-item a:hover {
-  color: #C5A46E;
+  color: var(--brand-accent);
 }
 
 .breadcrumb-premium .breadcrumb-item.active {
@@ -1052,9 +1123,9 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* Case Badge Premium */
 .case-badge-premium {
-  background: rgba(197, 164, 110, 0.2);
+  background: rgba(245, 158, 11, 0.2);
   color: #F8FAFC;
-  border: 1px solid rgba(197, 164, 110, 0.4);
+  border: 1px solid rgba(245, 158, 11, 0.4);
   padding: 0.35rem 0.75rem;
   border-radius: 0.5rem;
   font-size: 0.75rem;
@@ -1089,14 +1160,14 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .content-area a {
-  color: #C5A46E;
+  color: var(--brand-accent);
   text-decoration: none;
-  border-bottom: 1px solid rgba(197, 164, 110, 0.3);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .content-area a:hover {
-  color: #B39560;
-  border-bottom-color: rgba(179, 149, 96, 0.5);
+  color: var(--brand-accent-dark);
+  border-bottom-color: rgba(217, 119, 6, 0.5);
 }
 
 /* Practice Area Links */
@@ -1105,7 +1176,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 
 .practice-area-link:hover {
-  color: #C5A46E !important;
+  color: var(--brand-accent) !important;
 }
 
 /* Legacy support */
@@ -1175,8 +1246,8 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* ===== Footer ===== */
 .premium-footer {
-  background: linear-gradient(to bottom, #0A1A2F, #13233A);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(to bottom, var(--brand-primary), var(--brand-primary-light));
+  border-top: 1px solid var(--border-on-dark);
 }
 
 .footer-heading {

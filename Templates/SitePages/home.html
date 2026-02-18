@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Clear, practical legal advice | Barrister{% endblock %}
+{% block title %}Clear, practical legal advice | {{ SITE_NAME }}{% endblock %}
 {% block content %}
 
 <!-- Hero -->
@@ -11,16 +11,16 @@
         <h1 class="display-5 fw-semibold home-hero-title mb-3">{{ homepage.hero_heading|default:"Clear, practical legal advice" }}</h1>
         <p class="lead mb-3 text-light-50">{{ homepage.hero_subheading|default:"Focused expertise in commercial, criminal, general practice, and personal injury matters. Direct professional access provided."|safe }}</p>
         <p class="small text-light-50 mb-4">
-          <i class="bi bi-shield-check me-1"></i> Called to the Bar: 2021
+          <i class="bi bi-shield-check me-1"></i> Called to the Bar: {{ YEAR_CALLED }}
           <span class="mx-2">·</span>
-          <i class="bi bi-briefcase me-1"></i> Commercial, Criminal & General Practice
+          <i class="bi bi-briefcase me-1"></i> {{ PRACTICE_AREAS_SHORT }}
         </p>
         <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
-          <a href="/book/" class="btn btn-primary btn-lg home-hero-cta-primary">
-            <i class="bi bi-calendar-check me-2"></i>Book a consultation
+          <a href="/contact/" class="btn btn-primary btn-lg home-hero-cta-primary">
+            <i class="bi bi-envelope me-2"></i>Submit an enquiry
           </a>
-          <a href="/practice-areas/" class="btn btn-outline-light btn-lg home-hero-cta-secondary">
-            View practice areas
+          <a href="/book/" class="btn btn-outline-light btn-lg home-hero-cta-secondary">
+            <i class="bi bi-calendar-check me-2"></i>Book a consultation
           </a>
         </div>
       </div>
@@ -33,8 +33,8 @@
                  class="w-100 h-100 object-fit-cover">
           </div>
           <div class="card-body">
-            <h2 class="h5 mb-1">David&nbsp;Nugent&nbsp;BL</h2>
-            <p class="small text-muted mb-2">Barrister-at-Law – Commercial & Employment</p>
+            <h2 class="h5 mb-1">{{ SITE_NAME }}</h2>
+            <p class="small text-muted mb-2">Barrister-at-Law – {{ PRACTICE_AREAS_SHORT }}</p>
             <p class="small text-muted mb-0">
               Providing focused advice and advocacy in commercial, employment and regulatory disputes.
             </p>
@@ -52,7 +52,7 @@
       <div class="col-md-8">
         <h2 class="h3 fw-semibold mb-2">Practice areas</h2>
         <p class="text-muted mb-0">
-          A focused practice across the Dublin, Eastern and Midland Circuits.
+          A focused practice across {{ CIRCUITS }}.
         </p>
       </div>
       <div class="col-md-4 text-md-end mt-3 mt-md-0">
@@ -229,7 +229,7 @@
       <div class="col-lg-8">
         <h2 class="h4 fw-semibold mb-1">Need advice on a specific matter?</h2>
         <p class="text-muted mb-0">
-          This site provides general information only. For tailored advice, you can contact chambers or book a consultation.
+          Ready to book a consultation? Or submit an initial enquiry to discuss your matter first.
         </p>
       </div>
       <div class="col-lg-4 text-lg-end">
@@ -238,7 +238,7 @@
             Book consultation
           </a>
           <a href="/contact/" class="btn btn-outline-secondary">
-            Contact chambers
+            Submit enquiry
           </a>
         </div>
       </div>

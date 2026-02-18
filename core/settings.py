@@ -48,6 +48,32 @@ BARRISTER_PHONE = os.getenv("BARRISTER_PHONE", "01 XXX XXXX")
 CHAMBERS_ADDRESS_LINE1 = os.getenv("CHAMBERS_ADDRESS_LINE1", "Your Chambers")
 CHAMBERS_ADDRESS_LINE2 = os.getenv("CHAMBERS_ADDRESS_LINE2", "Dublin, Ireland")
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",

@@ -173,6 +173,7 @@ class BookingSubmissionForm(forms.ModelForm):
     consent = forms.BooleanField(
         required=True,
         label='I consent to my data being processed as described in the <a href="/privacy/" target="_blank">Privacy Policy</a>',
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
         help_text="We collect and process your information solely for the purpose of managing your consultation booking."
     )
 

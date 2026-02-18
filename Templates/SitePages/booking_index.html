@@ -2,7 +2,7 @@
 {% block title %}Book a Consultation | David Nugent BL{% endblock %}
 {% block content %}
 
-<main class="py-5 bg-body">
+<div class="py-5 bg-body">
   <section class="py-4">
     <div class="container-xl">
       <!-- Page header -->
@@ -86,11 +86,11 @@
               <h2 class="h6 fw-semibold mb-3">Contact alternatives</h2>
               <p class="small text-muted mb-2">
                 <i class="bi bi-envelope me-2 text-primary"></i>
-                <a href="mailto:david.nugent@lawlibrary.ie" class="text-decoration-none">david.nugent@lawlibrary.ie</a>
+                <a href="mailto:{{ BARRISTER_EMAIL }}" class="text-decoration-none">{{ BARRISTER_EMAIL }}</a>
               </p>
               <p class="small text-muted mb-0">
                 <i class="bi bi-telephone me-2 text-primary"></i>
-                <a href="tel:012916043" class="text-decoration-none">01 291 6043</a>
+                <a href="tel:{{ BARRISTER_PHONE|cut:' ' }}" class="text-decoration-none">{{ BARRISTER_PHONE }}</a>
               </p>
             </div>
 
@@ -106,6 +106,6 @@
       </div>
     </div>
   </section>
-</main>
+</div>
 
 {% endblock %}

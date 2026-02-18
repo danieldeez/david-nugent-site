@@ -3,7 +3,7 @@
 {% block title %}Booking Confirmed | Book a Consultation{% endblock %}
 {% block content %}
 
-<main class="py-5 bg-body">
+<div class="py-5 bg-body">
   <section class="py-4">
     <div class="container-xl" style="max-width: 900px;">
       <!-- Success header -->
@@ -107,7 +107,6 @@
                 </p>
                 <ul class="small text-muted ps-3 mb-0">
                   <li class="mb-2">Direct bank transfer (details will be emailed to you)</li>
-                  <li class="mb-2">Revolut username: <strong>@davidnugent</strong> (placeholder)</li>
                   <li>Contact chambers for other payment options</li>
                 </ul>
               </div>
@@ -138,11 +137,11 @@
           <h2 class="h6 fw-semibold mb-3">Questions or Need to Reschedule?</h2>
           <p class="small text-muted mb-2">
             <i class="bi bi-envelope me-2 text-primary"></i>
-            Email: <a href="mailto:david.nugent@lawlibrary.ie" class="text-decoration-none">david.nugent@lawlibrary.ie</a>
+            Email: <a href="mailto:{{ BARRISTER_EMAIL }}" class="text-decoration-none">{{ BARRISTER_EMAIL }}</a>
           </p>
           <p class="small text-muted mb-0">
             <i class="bi bi-telephone me-2 text-primary"></i>
-            Phone: <a href="tel:012916043" class="text-decoration-none">01 291 6043</a>
+            Phone: <a href="tel:{{ BARRISTER_PHONE|cut:' ' }}" class="text-decoration-none">{{ BARRISTER_PHONE }}</a>
           </p>
         </div>
       </div>
@@ -155,6 +154,6 @@
       </div>
     </div>
   </section>
-</main>
+</div>
 
 {% endblock %}

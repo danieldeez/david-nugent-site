@@ -2,7 +2,7 @@
 {% block title %}Booking Form | Book a Consultation{% endblock %}
 {% block content %}
 
-<main class="py-5 bg-body">
+<div class="py-5 bg-body">
   <section class="py-4">
     <div class="container-xl" style="max-width: 900px;">
       <!-- Breadcrumb -->
@@ -68,12 +68,9 @@
               <div class="alert alert-danger">
                 {{ form.non_field_errors }}
               </div>
-            {% endif %}
-
-            {% if form.errors %}
+            {% elif form.errors %}
               <div class="alert alert-danger">
-                <strong>Please correct the errors below.</strong>
-                {{ form.errors }}
+                <strong>Please correct the errors highlighted below.</strong>
               </div>
             {% endif %}
 
@@ -196,6 +193,6 @@
       </div>
     </div>
   </section>
-</main>
+</div>
 
 {% endblock %}

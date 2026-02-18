@@ -109,11 +109,11 @@
               <h2 class="h6 fw-semibold mb-3">Need help?</h2>
               <p class="small text-muted mb-2">
                 <i class="bi bi-envelope me-2 text-primary"></i>
-                <a href="mailto:david.nugent@lawlibrary.ie" class="text-decoration-none">david.nugent@lawlibrary.ie</a>
+                <a href="mailto:{{ BARRISTER_EMAIL }}" class="text-decoration-none">{{ BARRISTER_EMAIL }}</a>
               </p>
               <p class="small text-muted mb-0">
                 <i class="bi bi-telephone me-2 text-primary"></i>
-                <a href="tel:012916043" class="text-decoration-none">01 291 6043</a>
+                <a href="tel:{{ BARRISTER_PHONE|cut:' ' }}" class="text-decoration-none">{{ BARRISTER_PHONE }}</a>
               </p>
             </div>
           </aside>

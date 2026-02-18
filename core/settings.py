@@ -43,10 +43,17 @@ CALENDAR_FEED_SECRET = os.getenv("CALENDAR_FEED_SECRET", "")
 # These are used in templates and calendar feed
 SITE_NAME = os.getenv("SITE_NAME", "David Nugent BL")
 BARRISTER_NAME = os.getenv("BARRISTER_NAME", "David Nugent")
-BARRISTER_EMAIL = os.getenv("BARRISTER_EMAIL", "info@davidnugent.ie")
-BARRISTER_PHONE = os.getenv("BARRISTER_PHONE", "01 XXX XXXX")
-CHAMBERS_ADDRESS_LINE1 = os.getenv("CHAMBERS_ADDRESS_LINE1", "Your Chambers")
-CHAMBERS_ADDRESS_LINE2 = os.getenv("CHAMBERS_ADDRESS_LINE2", "Dublin, Ireland")
+BARRISTER_EMAIL = os.getenv("BARRISTER_EMAIL", "david.nugent@lawlibrary.ie")
+BARRISTER_PHONE = os.getenv("BARRISTER_PHONE", "01 291 6043")
+BARRISTER_MOBILE = os.getenv("BARRISTER_MOBILE", "")
+CHAMBERS_ADDRESS_LINE1 = os.getenv("CHAMBERS_ADDRESS_LINE1", "Law Library, Four Courts")
+CHAMBERS_ADDRESS_LINE2 = os.getenv("CHAMBERS_ADDRESS_LINE2", "Dublin 7, Ireland")
+CHAMBERS_DX = os.getenv("CHAMBERS_DX", "301175")
+YEAR_CALLED = os.getenv("YEAR_CALLED", "2021")
+PRACTICE_AREAS_SHORT = os.getenv("PRACTICE_AREAS_SHORT", "Commercial/Chancery, Criminal, General Practice, Tort & Personal Injury")
+BARRISTER_BIO_FOOTER = os.getenv("BARRISTER_BIO_FOOTER", "Junior Counsel practising in Commercial/Chancery, Criminal, General Practice, and Tort & Personal Injury Law. Dublin, Eastern & Midland Circuits.")
+CIRCUITS = os.getenv("CIRCUITS", "Dublin, Eastern & Midland")
+QUALIFICATIONS = os.getenv("QUALIFICATIONS", "LLB (Hons) Irish Law, BL")
 
 LOGGING = {
     "version": 1,

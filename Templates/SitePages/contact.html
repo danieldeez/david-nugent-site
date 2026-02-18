@@ -4,7 +4,7 @@
 {% block content %}
 
 <!-- Contact page -->
-<main class="py-5 bg-body">
+<div class="py-5 bg-body">
   <section class="py-4">
     <div class="container-lg">
       <!-- Page header -->
@@ -63,7 +63,7 @@
                     <div class="form-check contact-consent">
                       {{ form.consent|add_class:"form-check-input" }}
                       <label class="form-check-label small" for="{{ form.consent.id_for_label }}">
-                        I understand that this form is for general enquiries and that no solicitor–client relationship is created by submitting it.
+                        {{ form.consent.label|safe }} <span class="text-danger">*</span>
                       </label>
                       {% if form.consent.errors %}
                         <div class="form-text text-danger small d-block mt-1">{{ form.consent.errors.0 }}</div>
@@ -99,25 +99,29 @@
               <h2 class="h6 fw-semibold mb-3 contact-aside-heading">Chambers contact</h2>
               <p class="small text-muted mb-2">
                 <i class="bi bi-envelope me-2 text-primary"></i>
-                <a href="mailto:david.nugent@lawlibrary.ie" class="text-decoration-none">david.nugent@lawlibrary.ie</a>
+                <a href="mailto:{{ BARRISTER_EMAIL }}" class="text-decoration-none">{{ BARRISTER_EMAIL }}</a>
               </p>
               <p class="small text-muted mb-2">
                 <i class="bi bi-telephone me-2 text-primary"></i>
-                <a href="tel:012916043" class="text-decoration-none">01 291 6043</a>
+                <a href="tel:{{ BARRISTER_PHONE|cut:' ' }}" class="text-decoration-none">{{ BARRISTER_PHONE }}</a>
               </p>
+              {% if BARRISTER_MOBILE %}
               <p class="small text-muted mb-2">
                 <i class="bi bi-phone me-2 text-primary"></i>
-                <a href="tel:0867969769" class="text-decoration-none">086-796 9769</a> <span class="text-muted">(Mobile)</span>
+                <a href="tel:{{ BARRISTER_MOBILE|cut:' '|cut:'-' }}" class="text-decoration-none">{{ BARRISTER_MOBILE }}</a> <span class="text-muted">(Mobile)</span>
               </p>
+              {% endif %}
               <p class="small text-muted mb-2">
                 <i class="bi bi-geo-alt me-2 text-primary"></i>
-                Law Library, Four Courts<br>
-                <span class="ms-4">Dublin 7, Ireland</span>
+                {{ CHAMBERS_ADDRESS_LINE1 }}<br>
+                <span class="ms-4">{{ CHAMBERS_ADDRESS_LINE2 }}</span>
               </p>
+              {% if CHAMBERS_DX %}
               <p class="small text-muted mb-0">
                 <i class="bi bi-mailbox me-2 text-primary"></i>
-                DX: 301175
+                DX: {{ CHAMBERS_DX }}
               </p>
+              {% endif %}
             </div>
 
             <!-- Urgent matters -->
@@ -140,6 +144,6 @@
       </div>
     </div>
   </section>
-</main>
+</div>
 
 {% endblock %}

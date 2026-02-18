@@ -99,40 +99,6 @@
                     </a>
                   </td>
                 </tr>
-
-                <div class="modal fade" id="intakeModal{{ session.id }}" tabindex="-1" aria-hidden="true">
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">Intake Session — {{ session.created_at|date:"j M Y H:i" }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <div class="mb-3"><strong>Name:</strong> {{ session.name|default:"Not provided" }}</div>
-                        <div class="mb-3">
-                          <strong>Email:</strong>
-                          {% if session.email %}
-                            <a href="mailto:{{ session.email }}">{{ session.email }}</a>
-                          {% else %}Not provided{% endif %}
-                        </div>
-                        <div class="mb-3">
-                          <strong>UUID:</strong>
-                          <span class="font-monospace small">{{ session.uuid }}</span>
-                        </div>
-                        <hr>
-                        <div>
-                          <strong>Full Matter Description:</strong>
-                          <div class="p-3 bg-light rounded mt-2">
-                            <p class="mb-0" style="white-space: pre-wrap;">{{ session.raw_text }}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 {% endfor %}
               </tbody>
             </table>
@@ -144,6 +110,47 @@
           </div>
         </div>
       </div>
+
+      {# Modals must live outside the table to be valid HTML #}
+      {% for session in intake_sessions %}
+      <div class="modal fade" id="intakeModal{{ session.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Intake Session — {{ session.created_at|date:"j M Y H:i" }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3"><strong>Name:</strong> {{ session.name|default:"Not provided" }}</div>
+              <div class="mb-3">
+                <strong>Email:</strong>
+                {% if session.email %}
+                  <a href="mailto:{{ session.email }}">{{ session.email }}</a>
+                {% else %}Not provided{% endif %}
+              </div>
+              <div class="mb-3">
+                <strong>UUID:</strong>
+                <span class="font-monospace small">{{ session.uuid }}</span>
+              </div>
+              <hr>
+              <div>
+                <strong>Full Matter Description:</strong>
+                <div class="p-3 bg-light rounded mt-2">
+                  <p class="mb-0" style="white-space: pre-wrap;">{{ session.raw_text }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="{% url 'owner_intake_detail' session.uuid %}" class="btn btn-primary">
+                <i class="bi bi-eye"></i> View Full Details
+              </a>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
     {% else %}
       <div class="card border-0 shadow-sm">
         <div class="card-body text-center py-5">

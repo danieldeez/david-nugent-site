@@ -1,7 +1,35 @@
-{% extends "SitePages/base.html" %}
-{% block title %}Thanks{% endblock %}
+{% extends "base.html" %}
+{% block title %}Enquiry Received | David Nugent BL{% endblock %}
 {% block content %}
-<h1 class="text-2xl font-semibold mb-4">Thanks, {{ lead.name }}.</h1>
-<p>Your message has been received. We’ll be in touch shortly.</p>
-<a class="mt-6 inline-block underline" href="/">Return home</a>
+
+<main class="py-5 bg-body">
+  <section class="py-4">
+    <div class="container" style="max-width: 640px;">
+      <div class="text-center mb-4">
+        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+             style="width: 72px; height: 72px;">
+          <i class="bi bi-check-lg text-success" style="font-size: 2rem;"></i>
+        </div>
+        <h1 class="h3 fw-semibold mb-2">Thank you, {{ lead.name }}.</h1>
+        <p class="text-muted mb-0">Your enquiry has been received. We'll be in touch shortly.</p>
+      </div>
+
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <p class="mb-0 small text-muted">
+            <i class="bi bi-shield-check me-2 text-success"></i>
+            Your message has been recorded. A member of chambers will review your enquiry and respond if appropriate, typically within 1–2 business days.
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <a href="/" class="btn btn-outline-secondary">
+          <i class="bi bi-house me-1"></i>Return to homepage
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
 {% endblock %}

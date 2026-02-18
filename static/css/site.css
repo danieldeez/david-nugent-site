@@ -21,13 +21,13 @@
   --brand-primary: #0a1628;           /* Primary brand color (deep navy) */
   --brand-primary-light: #0f1f35;     /* Lighter shade of navy */
   --brand-primary-medium: #1a2f4a;    /* Medium navy for gradients */
-  --brand-accent: #2878e8;            /* Accent/highlight color (blue) */
-  --brand-accent-dark: #1a66d1;       /* Darker blue for hover states */
+  --brand-accent: #C5A46E;            /* Accent/highlight color (gold) */
+  --brand-accent-dark: #A88A52;       /* Darker gold for hover states */
 
   /* CTA (Call-to-Action) Colors */
-  --cta-bg: #2878e8;                  /* CTA button background (blue) */
-  --cta-bg-hover: #1a66d1;            /* CTA button hover state (darker blue) */
-  --cta-text: #ffffff;                /* CTA button text color */
+  --cta-bg: #C5A46E;                  /* CTA button background (gold) */
+  --cta-bg-hover: #A88A52;            /* CTA button hover state (darker gold) */
+  --cta-text: #0a1628;                /* CTA button text color (dark navy on gold) */
 
   /* Background & Surface Colors */
   --bg-page: #fafbfd;                 /* Main page background */
@@ -57,8 +57,14 @@
   --ink-600: #4a5d7a;
   --ink-500: #6b7a93;
   --ink-400: #8b98ae;
-  --cta: #2878e8;
-  --cta-hover: #1a66d1;
+  --cta: #C5A46E;
+  --cta-hover: #A88A52;
+  /* Bootstrap primary overrides */
+  --bs-primary: #C5A46E;
+  --bs-primary-rgb: 197, 164, 110;
+  --bs-link-color: #C5A46E;
+  --bs-link-color-rgb: 197, 164, 110;
+  --bs-link-hover-color: #A88A52;
   --bg: #fafbfd;
   --white: #ffffff;
   --border-light: #e7ecf3;
@@ -231,20 +237,20 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 .btn-cta{
   background: var(--cta);
-  color: #fff;
+  color: var(--brand-primary);
   border: none;
-  box-shadow: 0 2px 8px rgba(40, 120, 232, 0.2);
+  box-shadow: 0 2px 8px rgba(197, 164, 110, 0.25);
   font-weight: 600;
 }
 .btn-cta:hover{
   background: var(--cta-hover);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(40, 120, 232, 0.3);
+  color: var(--brand-primary);
+  box-shadow: 0 4px 16px rgba(197, 164, 110, 0.35);
   transform: translateY(-1px);
 }
 .btn-cta:active{
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(40, 120, 232, 0.25);
+  box-shadow: 0 2px 8px rgba(197, 164, 110, 0.3);
 }
 .btn-outline-light{
   border-width: 1.5px;
@@ -258,6 +264,34 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 .btn-lg{
   padding: 0.75rem 2rem;
   font-size: 1rem;
+}
+
+/* ===== Bootstrap primary colour overrides (gold) ===== */
+.btn-primary {
+  --bs-btn-bg: var(--brand-accent);
+  --bs-btn-border-color: var(--brand-accent);
+  --bs-btn-hover-bg: var(--brand-accent-dark);
+  --bs-btn-hover-border-color: var(--brand-accent-dark);
+  --bs-btn-active-bg: var(--brand-accent-dark);
+  --bs-btn-active-border-color: var(--brand-accent-dark);
+  --bs-btn-color: var(--brand-primary);
+  --bs-btn-hover-color: var(--brand-primary);
+  --bs-btn-active-color: var(--brand-primary);
+  --bs-btn-focus-shadow-rgb: 197, 164, 110;
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--brand-accent);
+  --bs-btn-border-color: var(--brand-accent);
+  --bs-btn-hover-bg: var(--brand-accent);
+  --bs-btn-hover-border-color: var(--brand-accent);
+  --bs-btn-hover-color: var(--brand-primary);
+  --bs-btn-active-bg: var(--brand-accent-dark);
+  --bs-btn-active-border-color: var(--brand-accent-dark);
+  --bs-btn-active-color: var(--brand-primary);
+}
+/* bg-primary uses gold — needs dark text for contrast */
+.bg-primary {
+  color: var(--brand-primary) !important;
 }
 
 /* ===== Home Hero ===== */
@@ -682,7 +716,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
   box-shadow:
     0 8px 20px rgba(10,22,40,.08),
     0 2px 6px rgba(10,22,40,.04);
-  border-color: rgba(40, 120, 232, 0.3);
+  border-color: rgba(197, 164, 110, 0.4);
 }
 .practice-card .card-body{
   padding: 2rem;
@@ -1356,7 +1390,7 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 }
 .form-control:focus{
   border-color: var(--cta);
-  box-shadow: 0 0 0 3px rgba(40, 120, 232, 0.1);
+  box-shadow: 0 0 0 3px rgba(197, 164, 110, 0.2);
 }
 .form-label{
   font-weight: 500;

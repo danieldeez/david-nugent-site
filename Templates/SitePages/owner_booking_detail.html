@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Booking Detail | Owner{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-2">
+            <li class="breadcrumb-item"><a href="{% url 'owner_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'owner_booking_list' %}">Bookings</a></li>
+            <li class="breadcrumb-item active">Booking #{{ booking.pk }}</li>
+          </ol>
+        </nav>
+        <h1 class="h3 mb-0">Booking Detail</h1>
+      </div>
+      <a href="{% url 'owner_booking_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0"><i class="bi bi-calendar-check text-primary"></i> Booking Details</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Date &amp; Time</strong>
+              <div>
+                <strong>{{ booking.slot.date|date:"l, j F Y" }}</strong><br>
+                <span class="text-muted">
+                  {{ booking.slot.start_time|time:"g:i A" }} - {{ booking.slot.end_time|time:"g:i A" }}
+                  ({{ booking.slot.duration_minutes }} minutes)
+                </span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Consultation Type</strong>
+              <span class="badge bg-light text-dark">{{ booking.slot.get_slot_type_display }}</span>
+            </div>
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Payment Status</strong>
+              {% if booking.is_paid %}
+                <span class="badge bg-success">Paid</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">Unpaid</span>
+              {% endif %}
+            </div>
+            <div class="mb-0">
+              <strong class="text-muted small d-block mb-1">Booking Created</strong>
+              <div>{{ booking.created_at|date:"j F Y, g:i A" }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm mb-3">
+          <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0"><i class="bi bi-person text-primary"></i> Client Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Name</strong>
+              <div>{{ booking.name }}</div>
+            </div>
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Email</strong>
+              <div><a href="mailto:{{ booking.email }}">{{ booking.email }}</a></div>
+            </div>
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Phone</strong>
+              <div>
+                {% if booking.phone %}
+                  <a href="tel:{{ booking.phone }}">{{ booking.phone }}</a>
+                {% else %}
+                  <em class="text-muted">Not provided</em>
+                {% endif %}
+              </div>
+            </div>
+            <hr>
+            <div class="mb-0">
+              <strong class="text-muted small d-block mb-2">Matter Description</strong>
+              <div class="p-3 bg-light rounded">
+                <p class="mb-0" style="white-space: pre-wrap; line-height: 1.6;">{{ booking.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% if booking.intake %}
+          <div class="card border-0 shadow-sm border-success">
+            <div class="card-header bg-success bg-opacity-10 border-bottom border-success">
+              <h5 class="mb-0"><i class="bi bi-link-45deg text-success"></i> Linked Enquiry</h5>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <strong class="text-muted small d-block mb-1">Reference UUID</strong>
+                <div class="font-monospace small text-break">{{ booking.intake.uuid }}</div>
+              </div>
+              <div class="mb-3">
+                <strong class="text-muted small d-block mb-1">Enquiry Submitted</strong>
+                <div>{{ booking.intake.created_at|date:"j F Y, g:i A" }}</div>
+              </div>
+              {% if booking.intake.email %}
+                <div class="mb-3">
+                  <strong class="text-muted small d-block mb-1">Enquiry Email</strong>
+                  <div>{{ booking.intake.email }}</div>
+                </div>
+              {% endif %}
+              <a href="{% url 'owner_intake_detail' booking.intake.uuid %}" class="btn btn-success w-100">
+                <i class="bi bi-eye"></i> View Enquiry Details
+              </a>
+            </div>
+          </div>
+        {% else %}
+          <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-4">
+              <i class="bi bi-link text-muted mb-2" style="font-size: 2rem;"></i>
+              <p class="text-muted mb-0">This booking is not linked to a specific enquiry.</p>
+              <small class="text-muted">(Direct booking without prior intake submission)</small>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-body">
+        <h6 class="mb-3">Actions</h6>
+        <div class="d-flex gap-2">
+          <form method="post" action="{% url 'owner_booking_toggle_paid' booking.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn {% if booking.is_paid %}btn-outline-warning{% else %}btn-success{% endif %}">
+              <i class="bi {% if booking.is_paid %}bi-x-circle{% else %}bi-check-circle{% endif %}"></i>
+              {% if booking.is_paid %}Mark as Unpaid{% else %}Mark as Paid{% endif %}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

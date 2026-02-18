@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Enquiry Received | David Nugent BL{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="text-center mb-5">
+          <div class="mb-4">
+            <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+          </div>
+          <h1 class="h3 fw-semibold mb-3">Thank you — your enquiry has been received</h1>
+          <p class="text-muted mb-0">
+            Your enquiry was submitted on
+            <strong>{{ intake_session.created_at|date:"j F Y" }}</strong>
+            at <strong>{{ intake_session.created_at|time:"H:i" }}</strong>.
+          </p>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-light border-0">
+            <h2 class="h6 mb-0 fw-semibold">
+              <i class="bi bi-file-text me-2"></i>Your Submission
+            </h2>
+          </div>
+          <div class="card-body">
+            {% if intake_session.name %}
+            <p class="mb-2"><strong>Name:</strong> {{ intake_session.name }}</p>
+            {% endif %}
+            {% if intake_session.email %}
+            <p class="mb-3"><strong>Email:</strong> {{ intake_session.email }}</p>
+            {% endif %}
+            <p class="mb-1"><strong>Matter Description:</strong></p>
+            <div class="p-3 bg-light rounded">
+              <p class="mb-0 small" style="white-space: pre-wrap;">{{ intake_session.raw_text }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-primary mb-4">
+          <div class="card-body">
+            <h2 class="h6 fw-semibold mb-3">
+              <i class="bi bi-arrow-right-circle text-primary me-2"></i>Next Steps
+            </h2>
+
+            {% if intake_session.is_suitable %}
+              <div class="alert alert-success mb-3">
+                <p class="mb-0">
+                  <i class="bi bi-check-circle me-2"></i>
+                  <strong>Good news:</strong> Based on the information you've provided, you may be suitable for a consultation. You can use the button below to view available consultation times.
+                </p>
+              </div>
+              <p class="mb-3">
+                If your matter is time-sensitive or urgent, please contact chambers directly in addition to booking online.
+              </p>
+              <div class="d-grid gap-2 d-sm-flex">
+                <a href="{% url 'book_index' %}?intake={{ intake_session.uuid }}" class="btn btn-primary">
+                  <i class="bi bi-calendar-check me-2"></i>Book a Consultation
+                </a>
+                <a href="{% url 'contact' %}" class="btn btn-outline-secondary">
+                  <i class="bi bi-envelope me-2"></i>Contact Chambers
+                </a>
+              </div>
+
+            {% elif intake_session.is_suitable == False %}
+              <p class="mb-3">
+                Thank you — your enquiry has been received. A member of chambers will review it and may contact you if appropriate.
+              </p>
+              <p class="mb-3">
+                Based on the information provided, this matter may not be suitable for our chambers. However, we will review your enquiry and respond if we can assist.
+              </p>
+              <p class="mb-0">
+                If you have questions or wish to discuss your matter, please contact chambers directly using the details below.
+              </p>
+              <div class="d-grid gap-2 d-sm-flex mt-3">
+                <a href="{% url 'contact' %}" class="btn btn-primary">
+                  <i class="bi bi-envelope me-2"></i>Contact Chambers
+                </a>
+              </div>
+
+            {% else %}
+              <p class="mb-3">
+                We will review your enquiry and respond appropriately. Typical response times are 1–2 business days.
+              </p>
+              <p class="mb-3">
+                A member of chambers will assess your matter and contact you if a consultation would be appropriate.
+              </p>
+              <p class="mb-0">
+                If your matter is time-sensitive or urgent, please contact chambers directly.
+              </p>
+              <div class="d-grid gap-2 d-sm-flex mt-3">
+                <a href="{% url 'contact' %}" class="btn btn-primary">
+                  <i class="bi bi-envelope me-2"></i>Contact Chambers
+                </a>
+              </div>
+
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          <p class="small mb-1"><strong>Reference Number:</strong></p>
+          <p class="small mb-0 font-monospace">{{ intake_session.uuid }}</p>
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="{% url 'home' %}" class="text-decoration-none">
+            <i class="bi bi-house me-1"></i>Return to homepage
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

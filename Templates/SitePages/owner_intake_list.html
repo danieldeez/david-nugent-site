@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}Intake Sessions | Owner Dashboard{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-1">Intake Sessions</h1>
+        <p class="text-muted mb-0">View initial enquiries submitted through the intake form</p>
+      </div>
+      <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i> {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="alert alert-success mb-4">
+      <i class="bi bi-robot me-2"></i>
+      <strong>AI Triage:</strong> AI triage runs automatically on public submissions. Click "View Details" to see triage status and run full analysis.
+    </div>
+
+    {% if intake_sessions %}
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col" style="width: 12%;">Received</th>
+                  <th scope="col" style="width: 12%;">Contact</th>
+                  <th scope="col" style="width: 38%;">Matter Description</th>
+                  <th scope="col" style="width: 13%;">AI Status</th>
+                  <th scope="col" style="width: 10%;">UUID</th>
+                  <th scope="col" style="width: 15%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for session in intake_sessions %}
+                <tr>
+                  <td class="align-middle">
+                    <div class="small"><strong>{{ session.created_at|date:"j M Y" }}</strong></div>
+                    <div class="small text-muted">{{ session.created_at|time:"H:i" }}</div>
+                  </td>
+                  <td class="align-middle">
+                    {% if session.name %}
+                      <div class="small fw-semibold">{{ session.name }}</div>
+                    {% else %}
+                      <div class="small text-muted fst-italic">Anonymous</div>
+                    {% endif %}
+                    {% if session.email %}
+                      <div class="small">
+                        <a href="mailto:{{ session.email }}" class="text-decoration-none">
+                          {{ session.email|truncatechars:25 }}
+                        </a>
+                      </div>
+                    {% endif %}
+                  </td>
+                  <td class="align-middle">
+                    <p class="small mb-0" style="line-height: 1.4;">{{ session.raw_text|truncatewords:20 }}</p>
+                    {% if session.raw_text|wordcount > 20 %}
+                      <a href="#" class="small text-decoration-none"
+                         data-bs-toggle="modal" data-bs-target="#intakeModal{{ session.id }}">
+                        Read full text <i class="bi bi-arrow-right"></i>
+                      </a>
+                    {% endif %}
+                  </td>
+                  <td class="align-middle">
+                    {% if session.structured_output and session.structured_output.case_type %}
+                      <span class="badge bg-primary" title="Full AI analysis completed">
+                        <i class="bi bi-robot"></i> Full Analysis
+                      </span>
+                    {% elif session.is_suitable is not None %}
+                      <span class="badge bg-info" title="Triage completed">
+                        <i class="bi bi-funnel"></i> Triage Only
+                      </span>
+                    {% else %}
+                      <span class="badge bg-secondary" title="No AI processing yet">
+                        <i class="bi bi-inbox"></i> Not Analysed
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td class="align-middle">
+                    <span class="small font-monospace text-muted" title="{{ session.uuid }}">
+                      {{ session.uuid|slice:":8" }}...
+                    </span>
+                  </td>
+                  <td class="align-middle">
+                    <a href="{% url 'owner_intake_detail' session.uuid %}" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-eye"></i> View Details
+                    </a>
+                  </td>
+                </tr>
+
+                <div class="modal fade" id="intakeModal{{ session.id }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Intake Session — {{ session.created_at|date:"j M Y H:i" }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="mb-3"><strong>Name:</strong> {{ session.name|default:"Not provided" }}</div>
+                        <div class="mb-3">
+                          <strong>Email:</strong>
+                          {% if session.email %}
+                            <a href="mailto:{{ session.email }}">{{ session.email }}</a>
+                          {% else %}Not provided{% endif %}
+                        </div>
+                        <div class="mb-3">
+                          <strong>UUID:</strong>
+                          <span class="font-monospace small">{{ session.uuid }}</span>
+                        </div>
+                        <hr>
+                        <div>
+                          <strong>Full Matter Description:</strong>
+                          <div class="p-3 bg-light rounded mt-2">
+                            <p class="mb-0" style="white-space: pre-wrap;">{{ session.raw_text }}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer bg-light border-0">
+          <div class="small text-muted text-center">
+            Showing {{ intake_sessions|length }} intake session{{ intake_sessions|length|pluralize }}
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="bi bi-inbox text-muted mb-3" style="font-size: 3rem;"></i>
+          <h5 class="text-muted mb-3">No intake sessions yet</h5>
+          <p class="text-muted mb-4">Enquiries submitted through the intake form will appear here.</p>
+          <a href="{% url 'intake_start' %}" class="btn btn-outline-primary" target="_blank">
+            <i class="bi bi-box-arrow-up-right me-2"></i>View Public Intake Form
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

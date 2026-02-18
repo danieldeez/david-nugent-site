@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from ckeditor.fields import RichTextField
+from uuid import uuid4
 
 class Lead(models.Model):
     name = models.CharField(max_length=120)
@@ -128,6 +129,27 @@ class CaseStudy(PostBase):
     def get_absolute_url(self):
         return reverse("case_detail", args=[self.slug])
 
+class IntakeSession(models.Model):
+    """
+    Captures initial enquiries from potential clients through the intake form.
+    """
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
+    name = models.CharField(max_length=200, blank=True, help_text="Optional user name")
+    email = models.EmailField(blank=True, help_text="Optional user email")
+    raw_text = models.TextField(help_text="User's free-text description of their matter")
+    structured_output = models.JSONField(null=True, blank=True, help_text="AI-generated structured data")
+    recommended_slot_type = models.CharField(max_length=100, blank=True, help_text="AI-recommended consultation type")
+    is_suitable = models.BooleanField(null=True, blank=True, help_text="AI suitability assessment")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Intake Session"
+        verbose_name_plural = "Intake Sessions"
+
+    def __str__(self):
+        return f"{self.created_at.date()} — {self.email or 'Anonymous'} — {self.uuid}"
+
 class AvailabilitySlot(models.Model):
     """
     Represents owner-defined availability windows for consultations.
@@ -198,6 +220,14 @@ class BookingSubmission(models.Model):
         on_delete=models.CASCADE,
         related_name="bookings",
         help_text="The availability slot being booked"
+    )
+    intake = models.ForeignKey(
+        IntakeSession,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="bookings",
+        help_text="Optional link to the intake session that led to this booking"
     )
     name = models.CharField(max_length=120, help_text="Client name")
     email = models.EmailField(help_text="Client email address")

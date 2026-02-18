@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% block title %}Intake Session Detail | Owner Dashboard{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-2">
+            <li class="breadcrumb-item"><a href="{% url 'owner_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'owner_intake_list' %}">Intake Sessions</a></li>
+            <li class="breadcrumb-item active">{{ intake_session.uuid|slice:":8" }}...</li>
+          </ol>
+        </nav>
+        <h1 class="h3 mb-0">Intake Session Detail</h1>
+      </div>
+      <a href="{% url 'owner_intake_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0"><i class="bi bi-inbox text-primary"></i> Submission Details</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Received</strong>
+              <div>{{ intake_session.created_at|date:"l, j F Y" }} at {{ intake_session.created_at|time:"H:i" }}</div>
+            </div>
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Reference UUID</strong>
+              <div class="font-monospace small text-break">{{ intake_session.uuid }}</div>
+            </div>
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Name</strong>
+              <div>{{ intake_session.name|default:"<em class='text-muted'>Not provided</em>" }}</div>
+            </div>
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-1">Email</strong>
+              <div>
+                {% if intake_session.email %}
+                  <a href="mailto:{{ intake_session.email }}">{{ intake_session.email }}</a>
+                {% else %}
+                  <em class="text-muted">Not provided</em>
+                {% endif %}
+              </div>
+            </div>
+            <hr>
+            <div class="mb-0">
+              <strong class="text-muted small d-block mb-2">Matter Description</strong>
+              <div class="p-3 bg-light rounded">
+                <p class="mb-0" style="white-space: pre-wrap; line-height: 1.6;">{{ intake_session.raw_text }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm mb-3">
+          <div class="card-header {% if intake_session.is_suitable %}bg-success{% elif intake_session.is_suitable == False %}bg-warning{% else %}bg-secondary{% endif %} bg-opacity-10 border-bottom">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Triage Status</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <strong class="text-muted small d-block mb-2">Automatic Suitability Assessment</strong>
+              {% if intake_session.is_suitable %}
+                <span class="badge bg-success px-3 py-2">
+                  <i class="bi bi-check-circle"></i> Suitable for Consultation
+                </span>
+                <p class="small text-muted mt-2 mb-0">This enquiry passed automatic triage and the user was offered booking options.</p>
+              {% elif intake_session.is_suitable == False %}
+                <span class="badge bg-warning text-dark px-3 py-2">
+                  <i class="bi bi-exclamation-triangle"></i> Not Suitable / Requires Review
+                </span>
+                <p class="small text-muted mt-2 mb-0">This enquiry was flagged by triage as not suitable for automatic booking.</p>
+              {% else %}
+                <span class="badge bg-secondary px-3 py-2">
+                  <i class="bi bi-question-circle"></i> Triage Not Run
+                </span>
+                <p class="small text-muted mt-2 mb-0">Automatic triage has not been performed on this enquiry yet.</p>
+              {% endif %}
+            </div>
+            {% if intake_session.recommended_slot_type %}
+              <div class="mb-0">
+                <strong class="text-muted small d-block mb-1">Recommended Consultation Type</strong>
+                <span class="badge bg-info">{{ intake_session.recommended_slot_type|title }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if structured and structured.case_type %}
+          <div class="card border-0 shadow-sm mb-3">
+            <div class="card-header bg-primary bg-opacity-10 border-bottom border-primary">
+              <h5 class="mb-0"><i class="bi bi-robot text-primary"></i> Full AI Analysis</h5>
+            </div>
+            <div class="card-body">
+              <div class="row g-3 mb-3">
+                <div class="col-6">
+                  <strong class="text-muted small d-block mb-1">Case Type</strong>
+                  <span class="badge bg-primary px-3 py-2">{{ structured.case_type|default:"—" }}</span>
+                </div>
+                <div class="col-6">
+                  <strong class="text-muted small d-block mb-1">Urgency</strong>
+                  {% if structured.urgency == "emergency" %}
+                    <span class="badge bg-danger px-3 py-2"><i class="bi bi-exclamation-triangle-fill"></i> Emergency</span>
+                  {% elif structured.urgency == "high" %}
+                    <span class="badge bg-warning px-3 py-2">High</span>
+                  {% elif structured.urgency == "medium" %}
+                    <span class="badge bg-info px-3 py-2">Medium</span>
+                  {% else %}
+                    <span class="badge bg-secondary px-3 py-2">Low</span>
+                  {% endif %}
+                </div>
+              </div>
+              {% if structured.timeline_summary %}
+                <div class="mb-3">
+                  <strong class="text-muted small d-block mb-1">Timeline &amp; Deadlines</strong>
+                  <div class="small">{{ structured.timeline_summary }}</div>
+                </div>
+              {% endif %}
+              {% if structured.key_facts %}
+                <div class="mb-3">
+                  <strong class="text-muted small d-block mb-2">Key Facts</strong>
+                  <ul class="small mb-0">
+                    {% for fact in structured.key_facts %}<li>{{ fact }}</li>{% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+              {% if structured.risk_flags %}
+                <div class="mb-3">
+                  <strong class="text-muted small d-block mb-2">Risk Flags</strong>
+                  {% for flag in structured.risk_flags %}
+                    <span class="badge bg-warning text-dark me-1 mb-1"><i class="bi bi-flag-fill"></i> {{ flag|title }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              {% if structured.suitability_hint %}
+                <div class="mb-0">
+                  <strong class="text-muted small d-block mb-1">Suitability Note</strong>
+                  <div class="small text-muted fst-italic">{{ structured.suitability_hint }}</div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <form method="post" action="{% url 'owner_intake_analyse' intake_session.uuid %}" onsubmit="return confirm('Re-run AI analysis? This will overwrite existing results.');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-primary w-100">
+                  <i class="bi bi-arrow-clockwise"></i> Re-run AI Analysis
+                </button>
+              </form>
+            </div>
+          </div>
+
+        {% else %}
+          <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+              <i class="bi bi-robot text-muted mb-3" style="font-size: 3rem;"></i>
+              <h5 class="text-muted mb-3">No Full AI Analysis Yet</h5>
+              <p class="text-muted mb-4">
+                Run full AI analysis to extract detailed structured information, key facts, and risk flags.
+              </p>
+              <form method="post" action="{% url 'owner_intake_analyse' intake_session.uuid %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary px-4">
+                  <i class="bi bi-play-circle"></i> Run Full AI Analysis
+                </button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-4">
+      <div class="card-header bg-white border-bottom">
+        <h5 class="mb-0"><i class="bi bi-calendar-check text-primary"></i> Linked Bookings</h5>
+      </div>
+      <div class="card-body p-0">
+        {% if linked_bookings %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th class="px-4 py-3">Date &amp; Time</th>
+                  <th class="px-4 py-3">Client</th>
+                  <th class="px-4 py-3">Type</th>
+                  <th class="px-4 py-3">Payment</th>
+                  <th class="px-4 py-3">Booked</th>
+                  <th class="px-4 py-3 text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for booking in linked_bookings %}
+                  <tr>
+                    <td class="px-4 py-3">
+                      <strong>{{ booking.slot.date|date:"D, M j, Y" }}</strong><br>
+                      <small class="text-muted">{{ booking.slot.start_time|time:"g:i A" }} - {{ booking.slot.end_time|time:"g:i A" }}</small>
+                    </td>
+                    <td class="px-4 py-3">
+                      <strong>{{ booking.name }}</strong><br>
+                      <small class="text-muted">{{ booking.email }}</small>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span class="badge bg-light text-dark">{{ booking.slot.get_slot_type_display }}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                      {% if booking.is_paid %}
+                        <span class="badge bg-success">Paid</span>
+                      {% else %}
+                        <span class="badge bg-warning text-dark">Unpaid</span>
+                      {% endif %}
+                    </td>
+                    <td class="px-4 py-3">
+                      <small class="text-muted">{{ booking.created_at|date:"M j, Y" }}</small>
+                    </td>
+                    <td class="px-4 py-3 text-end">
+                      <a href="{% url 'owner_booking_detail' booking.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> View
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <i class="bi bi-calendar-x text-muted mb-3" style="font-size: 3rem;"></i>
+            <p class="text-muted mb-0">No bookings have been created from this enquiry yet.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,18 +1,21 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.mail import send_mail
+from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.contrib import messages
-from .forms import ContactForm, HomepageSettingsForm, AboutPageForm, SitePageForm, PracticeAreaForm, BlogPostForm, CaseStudyForm, AvailabilitySlotForm, BookingSubmissionForm
+from .forms import ContactForm, IntakeForm, HomepageSettingsForm, AboutPageForm, SitePageForm, PracticeAreaForm, BlogPostForm, CaseStudyForm, AvailabilitySlotForm, BookingSubmissionForm
 import hmac, hashlib, json
 import re, time, requests
 from datetime import datetime, timedelta
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from .models import Booking, HomepageSettings, PracticeArea
-from .models import SitePage, PracticeArea, BlogPost, CaseStudy, AvailabilitySlot, BookingSubmission
+from .models import SitePage, PracticeArea, BlogPost, CaseStudy, IntakeSession, AvailabilitySlot, BookingSubmission
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
+from pathlib import Path
+from .llm_utils import call_llm_json, LLMError
 
 def home(request):
     homepage = HomepageSettings.load()
@@ -51,20 +54,12 @@ def terms(request):
 
 def contact(request):
     if request.method == "POST":
-        form = ContactForm(request.POST)
+        form = IntakeForm(request.POST)
         if form.is_valid():
-            lead = form.save()
-            if getattr(settings, "DEFAULT_FROM_EMAIL", None) and getattr(settings, "ENQUIRY_TO_EMAIL", None):
-                send_mail(
-                    "New website enquiry",
-                    f"Name: {lead.name}\nEmail: {lead.email}\nPhone: {lead.phone}\n\n{lead.message}",
-                    settings.DEFAULT_FROM_EMAIL,
-                    [settings.ENQUIRY_TO_EMAIL],
-                    fail_silently=True,
-                )
-            return render(request, "SitePages/thanks.html", {"lead": lead})
+            intake_session = form.save()
+            return redirect("intake_thank_you", intake_uuid=intake_session.uuid)
     else:
-        form = ContactForm()
+        form = IntakeForm()
     return render(request, "SitePages/contact.html", {"form": form})
 
 def calendly_webhook(request):
@@ -143,6 +138,47 @@ def case_list(request):
 def case_detail(request, slug):
     case = get_object_or_404(CaseStudy, slug=slug, published=True)
     return render(request, "SitePages/case_detail.html", {"case": case})
+
+# Intake System
+def intake_start(request):
+    if request.method == "POST":
+        form = IntakeForm(request.POST)
+        if form.is_valid():
+            intake_session = form.save()
+            return redirect("intake_thank_you", intake_uuid=intake_session.uuid)
+    else:
+        form = IntakeForm()
+    return render(request, "SitePages/intake_start.html", {"form": form})
+
+def classify_intake_session(session):
+    if session.is_suitable is not None:
+        return True
+    prompt_file = Path(settings.BASE_DIR) / "ai" / "prompts" / "intake_classify.txt"
+    try:
+        system_prompt = prompt_file.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return False
+    try:
+        result = call_llm_json(
+            system_prompt=system_prompt,
+            user_prompt=session.raw_text,
+            temperature=0.1,
+            max_tokens=100,
+            timeout=10
+        )
+        session.is_suitable = result.get("is_suitable", None)
+        if session.structured_output is None:
+            session.structured_output = {}
+        session.structured_output["triage"] = result
+        session.save()
+        return True
+    except (LLMError, Exception):
+        return False
+
+def intake_thank_you(request, intake_uuid):
+    intake_session = get_object_or_404(IntakeSession, uuid=intake_uuid)
+    classify_intake_session(intake_session)
+    return render(request, "SitePages/intake_thank_you.html", {"intake_session": intake_session})
 
 # Owner area
 def is_staff_user(user):
@@ -269,6 +305,55 @@ def owner_practice_area_delete(request, pk):
         return redirect("owner_practice_area_list")
 
     return render(request, "SitePages/owner_practice_area_confirm_delete.html", {"area": area})
+
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_intake_list(request):
+    intake_sessions = IntakeSession.objects.all()
+    return render(request, "SitePages/owner_intake_list.html", {"intake_sessions": intake_sessions})
+
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_intake_detail(request, intake_uuid):
+    intake_session = get_object_or_404(IntakeSession, uuid=intake_uuid)
+    structured = intake_session.structured_output or {}
+    linked_bookings = intake_session.bookings.all().select_related('slot').order_by('-created_at')
+    return render(request, "SitePages/owner_intake_detail.html", {
+        "intake_session": intake_session,
+        "structured": structured,
+        "linked_bookings": linked_bookings,
+    })
+
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_intake_analyse(request, intake_uuid):
+    intake_session = get_object_or_404(IntakeSession, uuid=intake_uuid)
+    if request.method != "POST":
+        return redirect("owner_intake_list")
+    prompt_file = Path(settings.BASE_DIR) / "ai" / "prompts" / "intake_prompt.txt"
+    try:
+        system_prompt = prompt_file.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        messages.error(request, "AI intake prompt file not found. Please check configuration.")
+        return redirect("owner_intake_list")
+    try:
+        result = call_llm_json(
+            system_prompt=system_prompt,
+            user_prompt=intake_session.raw_text,
+            temperature=0.2,
+            max_tokens=1500,
+            timeout=30
+        )
+        intake_session.structured_output = result
+        intake_session.save()
+        messages.success(request, "AI analysis completed successfully.")
+        return redirect("owner_intake_detail", intake_uuid=intake_uuid)
+    except LLMError as e:
+        messages.error(request, f"AI analysis failed: {str(e)}")
+        return redirect("owner_intake_list")
+    except Exception as e:
+        messages.error(request, f"Unexpected error during AI analysis: {str(e)}")
+        return redirect("owner_intake_list")
 
 @login_required
 @user_passes_test(is_staff_user, login_url='/')
@@ -604,23 +689,23 @@ def book_index(request):
     from datetime import date
     from collections import defaultdict
 
-    # Get all available slots in the future
+    intake_uuid = request.GET.get('intake')
+
     today = date.today()
     available_slots = AvailabilitySlot.objects.filter(
         date__gte=today,
         is_available=True
     ).order_by('date', 'start_time')
 
-    # Group slots by date
     dates_with_counts = defaultdict(int)
     for slot in available_slots:
         dates_with_counts[slot.date] += 1
 
-    # Convert to list of tuples (date, count)
     dates_list = sorted(dates_with_counts.items())
 
     return render(request, "SitePages/booking_index.html", {
         "dates_list": dates_list,
+        "intake_uuid": intake_uuid,
     })
 
 def book_date(request, date):
@@ -653,21 +738,29 @@ def book_slot(request, pk):
     """Displays booking form for a specific slot"""
     slot = get_object_or_404(AvailabilitySlot, pk=pk)
 
-    # Check if slot is still available
     if not slot.is_available:
         messages.error(request, "This slot is no longer available.")
         return redirect("book_index")
 
-    # Check if slot is in the past
     if slot.is_in_past():
         messages.error(request, "This slot is in the past.")
         return redirect("book_index")
+
+    intake_uuid = request.GET.get("intake")
+    intake_session = None
+    if intake_uuid:
+        try:
+            intake_session = IntakeSession.objects.filter(uuid=intake_uuid).first()
+        except (ValueError, ValidationError):
+            pass
 
     form = BookingSubmissionForm()
 
     return render(request, "SitePages/booking_slot.html", {
         "slot": slot,
         "form": form,
+        "intake_session": intake_session,
+        "intake_uuid": intake_uuid if intake_session else None,
     })
 
 def book_submit(request, pk):
@@ -689,19 +782,33 @@ def book_submit(request, pk):
         if form.is_valid():
             booking = form.save(commit=False)
             booking.slot = slot
-            booking.save()
 
-            # Mark slot as unavailable
+            intake_uuid = request.POST.get("intake_uuid") or request.GET.get("intake")
+            if intake_uuid:
+                try:
+                    intake_session = IntakeSession.objects.filter(uuid=intake_uuid).first()
+                    if intake_session:
+                        booking.intake = intake_session
+                except (ValueError, ValidationError):
+                    pass
+
+            booking.save()
             slot.is_available = False
             slot.save()
-
-            # Redirect to success page
             return redirect("book_success", booking_id=booking.pk)
         else:
-            # Return to form with errors
+            intake_uuid = request.POST.get("intake_uuid") or request.GET.get("intake")
+            intake_session = None
+            if intake_uuid:
+                try:
+                    intake_session = IntakeSession.objects.filter(uuid=intake_uuid).first()
+                except (ValueError, ValidationError):
+                    pass
             return render(request, "SitePages/booking_slot.html", {
                 "slot": slot,
                 "form": form,
+                "intake_session": intake_session,
+                "intake_uuid": intake_uuid if intake_session else None,
             })
     else:
         return redirect("book_slot", pk=pk)
@@ -723,6 +830,15 @@ def owner_booking_list(request):
 
     return render(request, "SitePages/owner_booking_list.html", {
         "bookings": bookings,
+    })
+
+@login_required
+@user_passes_test(is_staff_user, login_url='/')
+def owner_booking_detail(request, pk):
+    """Shows detailed view of a single booking"""
+    booking = get_object_or_404(BookingSubmission.objects.select_related('slot', 'intake'), pk=pk)
+    return render(request, "SitePages/owner_booking_detail.html", {
+        "booking": booking,
     })
 
 @login_required

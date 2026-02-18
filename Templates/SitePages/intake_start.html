@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Initial Enquiry | David Nugent BL{% endblock %}
+{% block content %}
+
+<section class="py-5 bg-body">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <header class="mb-5 text-center">
+          <h1 class="h3 fw-semibold mb-3">Share the details of your matter</h1>
+          <p class="text-muted mb-0">
+            This form helps us understand your initial enquiry. Please provide as much detail as you feel comfortable sharing at this stage.
+          </p>
+        </header>
+
+        <div class="alert alert-info mb-4">
+          <i class="bi bi-info-circle me-2"></i>
+          <strong>Please note:</strong> This is an initial enquiry only.
+          No legal advice will be given at this stage, and submitting this form does not create
+          a solicitor–client or barrister–client relationship.
+        </div>
+
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4 p-lg-5">
+            <form method="post" novalidate>
+              {% csrf_token %}
+
+              {% if form.errors %}
+              <div class="alert alert-danger mb-4" role="alert">
+                <strong>Please correct the errors below.</strong>
+              </div>
+              {% endif %}
+
+              <div class="mb-4">
+                <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                  <div class="form-text text-danger small">{{ form.name.errors.0 }}</div>
+                {% endif %}
+              </div>
+
+              <div class="mb-4">
+                <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                {{ form.email }}
+                <div class="form-text">Providing your email allows us to respond to your enquiry if appropriate.</div>
+                {% if form.email.errors %}
+                  <div class="form-text text-danger small">{{ form.email.errors.0 }}</div>
+                {% endif %}
+              </div>
+
+              <div class="mb-4">
+                <label for="{{ form.raw_text.id_for_label }}" class="form-label">
+                  {{ form.raw_text.label }} <span class="text-danger">*</span>
+                </label>
+                {{ form.raw_text }}
+                <div class="form-text">{{ form.raw_text.help_text }}</div>
+                {% if form.raw_text.errors %}
+                  <div class="form-text text-danger small">{{ form.raw_text.errors.0 }}</div>
+                {% endif %}
+              </div>
+
+              <div class="mb-4">
+                <div class="form-check">
+                  {{ form.consent }}
+                  <label class="form-check-label small" for="{{ form.consent.id_for_label }}">
+                    {{ form.consent.label|safe }} <span class="text-danger">*</span>
+                  </label>
+                  {% if form.consent.errors %}
+                    <div class="form-text text-danger small">{{ form.consent.errors.0 }}</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-send me-2"></i>Submit Enquiry
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card-footer bg-transparent border-0 px-4 px-lg-5 pb-4 pt-0">
+            <p class="small text-muted mb-0" style="line-height: 1.5;">
+              <i class="bi bi-shield-check me-1"></i>
+              This form does not create a solicitor–client or barrister–client relationship
+              and does not constitute legal advice. Do not include highly sensitive or confidential
+              information in your submission.
+            </p>
+          </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <p class="small text-muted mb-1">Prefer to speak directly?</p>
+          <p class="small">
+            <a href="{% url 'contact' %}" class="text-decoration-none">Contact chambers</a>
+            or <a href="{% url 'book_index' %}" class="text-decoration-none">book a consultation</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

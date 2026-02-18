@@ -1,5 +1,5 @@
 from django import forms
-from .models import Lead, HomepageSettings, SitePage, PracticeArea, BlogPost, CaseStudy, AvailabilitySlot, BookingSubmission
+from .models import Lead, HomepageSettings, SitePage, PracticeArea, BlogPost, CaseStudy, IntakeSession, AvailabilitySlot, BookingSubmission
 
 class ContactForm(forms.ModelForm):
     consent = forms.BooleanField(
@@ -12,6 +12,41 @@ class ContactForm(forms.ModelForm):
         model = Lead
         fields = ["name", "email", "phone", "message", "consent"]
         widgets = {"message": forms.Textarea(attrs={"rows": 5})}
+
+class IntakeForm(forms.ModelForm):
+    consent = forms.BooleanField(
+        required=True,
+        label='I consent to my data being processed as described in the <a href="/privacy/" target="_blank">Privacy Policy</a>',
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        help_text="We collect and process your information solely for the purpose of assessing your enquiry and arranging consultations."
+    )
+
+    class Meta:
+        model = IntakeSession
+        fields = ["name", "email", "raw_text"]
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Your name (optional)"
+            }),
+            "email": forms.EmailInput(attrs={
+                "class": "form-control",
+                "placeholder": "Your email (optional)"
+            }),
+            "raw_text": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 8,
+                "placeholder": "Please describe your legal matter in as much detail as you feel comfortable sharing..."
+            }),
+        }
+        labels = {
+            "name": "Name (Optional)",
+            "email": "Email Address (Optional)",
+            "raw_text": "Describe Your Matter",
+        }
+        help_texts = {
+            "raw_text": "This is an initial enquiry only. No legal advice will be provided at this stage, and no solicitor-client or barrister-client relationship is created by submitting this form.",
+        }
 
 class HomepageSettingsForm(forms.ModelForm):
     class Meta:

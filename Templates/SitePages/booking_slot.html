@@ -60,6 +60,9 @@
         <div class="card-body p-4">
           <form method="post" action="{% url 'book_submit' slot.pk %}" novalidate>
             {% csrf_token %}
+            {% if intake_uuid %}
+              <input type="hidden" name="intake_uuid" value="{{ intake_uuid }}">
+            {% endif %}
 
             {% if form.non_field_errors %}
               <div class="alert alert-danger">

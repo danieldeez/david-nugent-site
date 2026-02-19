@@ -887,6 +887,8 @@ def calendar_feed(request, secret_key):
     - Keep the URL private; anyone with the secret key can view your bookings
     - GDPR-safe: Only minimal data (name, intake ref) is included in calendar
     """
+    # TEMP DIAG: confirm view is executing at all
+    return HttpResponse(f"VIEW-RUNNING secret_key={secret_key!r}", status=200, content_type="text/plain")
     # Security: validate secret key
     configured_secret = settings.CALENDAR_FEED_SECRET
     if not configured_secret or secret_key != configured_secret:

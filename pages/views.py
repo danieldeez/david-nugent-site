@@ -892,7 +892,20 @@ def calendar_feed(request, secret_key):
     if not configured_secret or secret_key != configured_secret:
         return HttpResponse("Not found", status=404)
 
+
     # Get current time for filtering
+    import traceback as _tb
+    try:
+     return _cal_inner(request)
+    except Exception as _exc:
+     return HttpResponse(f"{type(_exc).__name__}: {_exc}\n\n{_tb.format_exc()}", status=500, content_type="text/plain; charset=utf-8")
+
+def _cal_inner(request):
+    from django.conf import settings
+    from django.http import HttpResponse
+    from django.utils import timezone
+    from datetime import datetime, timezone as dt_tz
+    from .models import BookingSubmission
     now = timezone.now()
 
     # Query all bookings (we'll filter by datetime in Python for precision)

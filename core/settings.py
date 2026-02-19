@@ -202,6 +202,10 @@ LOGOUT_REDIRECT_URL = '/'
 # On Render: set MEDIA_ROOT=/var/data/media and mount persistent disk at /var/data
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", str(BASE_DIR / "media")))
+try:
+    MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
+except OSError:
+    pass  # Disk not yet mounted (build phase) — directory created at runtime
 
 # Production security settings
 # These should be enabled when deploying to production (DEBUG=False)

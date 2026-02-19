@@ -887,29 +887,11 @@ def calendar_feed(request, secret_key):
     - Keep the URL private; anyone with the secret key can view your bookings
     - GDPR-safe: Only minimal data (name, intake ref) is included in calendar
     """
-    # TEMP DIAG: confirm view is executing at all
-    return HttpResponse(f"VIEW-RUNNING secret_key={secret_key!r}", status=200, content_type="text/plain")
     # Security: validate secret key
     configured_secret = settings.CALENDAR_FEED_SECRET
     if not configured_secret or secret_key != configured_secret:
         return HttpResponse("Not found", status=404)
 
-
-    # Diagnostic wrapper — expose any error as plain text
-    import traceback as _tb
-    try:
-        result = _cal_inner(request)
-        return result
-    except BaseException as _exc:
-        _msg = f"CAL-ERROR: {type(_exc).__name__}: {_exc}\n\n{_tb.format_exc()}"
-        return HttpResponse(_msg, status=200, content_type="text/plain; charset=utf-8")
-
-def _cal_inner(request):
-    from django.conf import settings
-    from django.http import HttpResponse
-    from django.utils import timezone
-    from datetime import datetime, timezone as dt_tz
-    from .models import BookingSubmission
     now = timezone.now()
 
     # Query all bookings (we'll filter by datetime in Python for precision)

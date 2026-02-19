@@ -6,7 +6,7 @@ from django.contrib import messages
 from .forms import ContactForm, IntakeForm, HomepageSettingsForm, AboutPageForm, SitePageForm, PracticeAreaForm, BlogPostForm, CaseStudyForm, AvailabilitySlotForm, BookingSubmissionForm
 import hmac, hashlib, json
 import re, time, requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as dt_tz
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse, HttpResponseBadRequest
 from .models import Booking, HomepageSettings, PracticeArea
 from .models import SitePage, PracticeArea, BlogPost, CaseStudy, IntakeSession, AvailabilitySlot, BookingSubmission
@@ -950,8 +950,8 @@ def calendar_feed(request, secret_key):
             continue
 
         # Format datetimes for ICS (UTC format: YYYYMMDDTHHmmssZ)
-        start_str = start_dt.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-        end_str = end_dt.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        start_str = start_dt.astimezone(dt_tz.utc).strftime("%Y%m%dT%H%M%SZ")
+        end_str = end_dt.astimezone(dt_tz.utc).strftime("%Y%m%dT%H%M%SZ")
 
         # Build GDPR-safe description with minimal data
         # Only include booking ID and a note to check CRM
@@ -967,7 +967,7 @@ def calendar_feed(request, secret_key):
         uid = f"booking-{booking.id}@{domain}"
 
         # Use timezone.now() for DTSTAMP (not deprecated datetime.utcnow())
-        dtstamp = timezone.now().astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        dtstamp = timezone.now().astimezone(dt_tz.utc).strftime("%Y%m%dT%H%M%SZ")
 
         # Build client name for summary (or fallback to "Consultation")
         client_name = booking.name if booking.name else "Client"

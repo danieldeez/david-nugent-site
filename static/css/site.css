@@ -777,12 +777,12 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
 
 /* ===== About Page ===== */
 .about-hero {
-  background: var(--bg-surface-alt);
+  background: linear-gradient(160deg, #0b1a2a 0%, #0f2540 100%);
 }
 
 .about-aside {
-  background: var(--bg-surface);
-  border-radius: 16px;
+  background: #fff;
+  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -790,8 +790,8 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
   position: relative;
   max-height: 400px;
   overflow: hidden;
-  background: var(--bg-surface-alt);
-  border-bottom: 1px solid var(--border-subtle);
+  background: #e8edf2;
+  border-bottom: 1px solid #dee2e6;
 }
 
 .about-portrait {
@@ -808,45 +808,47 @@ p { margin-bottom: 1.25rem; line-height: 1.6; }
   font-weight: 600;
 }
 
+.about-icon {
+  color: var(--brand-primary);
+}
+
 .about-heading {
   letter-spacing: 0.03em;
   font-family: 'IBM Plex Serif', Georgia, serif;
-  color: var(--brand-accent);
+  color: #fff;
   font-weight: 600;
 }
 
-/* About page section headings with accent color */
+.about-heading::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--brand-accent);
+  margin-top: 0.65rem;
+}
+
+/* Credential section headings — dark text on light bg */
 .about-hero ~ section h3,
 .about-hero ~ section h2 {
-  color: var(--brand-accent);
-  font-family: 'Playfair Display', 'IBM Plex Serif', Georgia, serif;
+  color: var(--navy-900);
+  font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 600;
-  letter-spacing: 0.5px;
 }
 
-/* Ensure CMS content headings also use accent color */
+/* CMS bio headings — white on dark bg */
 .about-intro h2,
 .about-intro h3 {
-  color: var(--brand-accent);
-  font-family: 'Playfair Display', Georgia, serif;
+  color: #fff;
+  font-family: 'IBM Plex Serif', Georgia, serif;
   font-weight: 600;
-  letter-spacing: 0.5px;
   margin-bottom: 1rem;
 }
 
 .about-intro {
   font-size: 1rem;
-  line-height: 1.7;
-}
-
-/* Deprecated - use .text-light-premium instead */
-.text-light-about {
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.text-light-about p {
-  color: rgba(255, 255, 255, 0.92);
-  line-height: 1.6;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .about-subtitle {

@@ -893,12 +893,14 @@ def calendar_feed(request, secret_key):
         return HttpResponse("Not found", status=404)
 
 
-    # Get current time for filtering
+    # Diagnostic wrapper — expose any error as plain text
     import traceback as _tb
     try:
-     return _cal_inner(request)
-    except Exception as _exc:
-     return HttpResponse(f"{type(_exc).__name__}: {_exc}\n\n{_tb.format_exc()}", status=500, content_type="text/plain; charset=utf-8")
+        result = _cal_inner(request)
+        return result
+    except BaseException as _exc:
+        _msg = f"CAL-ERROR: {type(_exc).__name__}: {_exc}\n\n{_tb.format_exc()}"
+        return HttpResponse(_msg, status=200, content_type="text/plain; charset=utf-8")
 
 def _cal_inner(request):
     from django.conf import settings
